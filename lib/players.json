@@ -1,0 +1,650 @@
+{
+  "gk": [
+    {
+      "id": 9000229,
+      "first_name": "Loris",
+      "last_name": "Karius",
+      "height": "189cm",
+      "weight": "75kg",
+      "birth_date": null,
+      "salary": 5100000,
+      "number": "1",
+      "position": {
+        "key": "gk",
+        "short_label": "GK",
+        "label": "Goalkeeper"
+      },
+      "labels": [
+        {
+          "name": "C",
+          "text_color": "#fff",
+          "bg_color": "#459615"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": "60",
+      "fantasy_score": 7.45
+    },
+    {
+      "id": 9000230,
+      "first_name": "Alexander",
+      "last_name": "Manninger",
+      "height": "189cm",
+      "weight": "85kg",
+      "birth_date": null,
+      "salary": 4200000,
+      "number": null,
+      "position": {
+        "key": "gk",
+        "short_label": "GK",
+        "label": "Goalkeeper"
+      },
+      "labels": [
+        {
+          "name": "O",
+          "text_color": "#fff",
+          "bg_color": "#9D2C31"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": "0",
+      "fantasy_score": 0
+    },
+    {
+      "id": 9000231,
+      "first_name": "Simon",
+      "last_name": "Mignolet",
+      "height": "193cm",
+      "weight": "87kg",
+      "birth_date": null,
+      "salary": 8500000,
+      "number": "22",
+      "position": {
+        "key": "gk",
+        "short_label": "GK",
+        "label": "Goalkeeper"
+      },
+      "labels": [
+        {
+          "name": "C",
+          "text_color": "#fff",
+          "bg_color": "#459615"
+        },
+        {
+          "name": "SUB",
+          "text_color": "#fff",
+          "bg_color": "#E47108"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": "20",
+      "fantasy_score": 0
+    },
+    {
+      "id": 9000119,
+      "first_name": "Julian",
+      "last_name": "Speroni",
+      "height": "186cm",
+      "weight": "87kg",
+      "birth_date": null,
+      "salary": 5600000,
+      "number": null,
+      "position": {
+        "key": "gk",
+        "short_label": "GK",
+        "label": "Goalkeeper"
+      },
+      "labels": [
+        {
+          "name": "O",
+          "text_color": "#fff",
+          "bg_color": "#9D2C31"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": 0,
+      "fantasy_score": 0
+    },
+    {
+      "id": 9000120,
+      "first_name": "Wayne",
+      "last_name": "Hennessey",
+      "height": "198cm",
+      "weight": "90kg",
+      "birth_date": null,
+      "salary": 6300000,
+      "number": "13",
+      "position": {
+        "key": "gk",
+        "short_label": "GK",
+        "label": "Goalkeeper"
+      },
+      "labels": [
+        {
+          "name": "C",
+          "text_color": "#fff",
+          "bg_color": "#459615"
+        },
+        {
+          "name": "SUB",
+          "text_color": "#fff",
+          "bg_color": "#E47108"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": "0",
+      "fantasy_score": 0
+    },
+    {
+      "id": 9000121,
+      "first_name": "Steve",
+      "last_name": "Mandanda",
+      "height": "185cm",
+      "weight": "82kg",
+      "birth_date": null,
+      "salary": 5900000,
+      "number": "30",
+      "position": {
+        "key": "gk",
+        "short_label": "GK",
+        "label": "Goalkeeper"
+      },
+      "labels": [
+        {
+          "name": "C",
+          "text_color": "#fff",
+          "bg_color": "#459615"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": "20",
+      "fantasy_score": 8.5
+    }
+  ],
+  "def": [
+    {
+      "id": 9000232,
+      "first_name": "Nathaniel",
+      "last_name": "Clyne",
+      "height": "175cm",
+      "weight": "67kg",
+      "birth_date": null,
+      "salary": 9600000,
+      "number": "2",
+      "position": {
+        "key": "def",
+        "short_label": "DEF",
+        "label": "Defender"
+      },
+      "labels": [
+        {
+          "name": "C",
+          "text_color": "#fff",
+          "bg_color": "#459615"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": "80",
+      "fantasy_score": 10.7
+    },
+    {
+      "id": 9000233,
+      "first_name": "Mamadou",
+      "last_name": "Sakho",
+      "height": "187cm",
+      "weight": "83kg",
+      "birth_date": null,
+      "salary": 11200000,
+      "number": null,
+      "position": {
+        "key": "def",
+        "short_label": "DEF",
+        "label": "Defender"
+      },
+      "labels": [
+        {
+          "name": "O",
+          "text_color": "#fff",
+          "bg_color": "#9D2C31"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": 0,
+      "fantasy_score": 0
+    },
+    {
+      "id": 9000234,
+      "first_name": "Dejan",
+      "last_name": "Lovren",
+      "height": "188cm",
+      "weight": "84kg",
+      "birth_date": null,
+      "salary": 11000000,
+      "number": "6",
+      "position": {
+        "key": "def",
+        "short_label": "DEF",
+        "label": "Defender"
+      },
+      "labels": [
+        {
+          "name": "C",
+          "text_color": "#fff",
+          "bg_color": "#459615"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": "40",
+      "fantasy_score": 21.45
+    },
+    {
+      "id": 9000235,
+      "first_name": "Joseph",
+      "last_name": "Gomez",
+      "height": "188cm",
+      "weight": "77kg",
+      "birth_date": null,
+      "salary": 5500000,
+      "number": null,
+      "position": {
+        "key": "def",
+        "short_label": "DEF",
+        "label": "Defender"
+      },
+      "labels": [
+        {
+          "name": "O",
+          "text_color": "#fff",
+          "bg_color": "#9D2C31"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": 0,
+      "fantasy_score": 0
+    },
+    {
+      "id": 9000236,
+      "first_name": "Ragnar",
+      "last_name": "Klavan",
+      "height": "187cm",
+      "weight": "85kg",
+      "birth_date": null,
+      "salary": 5600000,
+      "number": "17",
+      "position": {
+        "key": "def",
+        "short_label": "DEF",
+        "label": "Defender"
+      },
+      "labels": [
+        {
+          "name": "C",
+          "text_color": "#fff",
+          "bg_color": "#459615"
+        },
+        {
+          "name": "SUB ON",
+          "text_color": "#fff",
+          "bg_color": "#459615"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": 0,
+      "fantasy_score": 5
+    },
+    {
+      "id": 9000237,
+      "first_name": "Alberto",
+      "last_name": "Moreno",
+      "height": "171cm",
+      "weight": "65kg",
+      "birth_date": null,
+      "salary": 9700000,
+      "number": "18",
+      "position": {
+        "key": "def",
+        "short_label": "DEF",
+        "label": "Defender"
+      },
+      "labels": [
+        {
+          "name": "C",
+          "text_color": "#fff",
+          "bg_color": "#459615"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": "0",
+      "fantasy_score": 18.4
+    }
+  ],
+  "mid": [
+    {
+      "id": 9000240,
+      "first_name": "Kevin",
+      "last_name": "Stewart",
+      "height": "181cm",
+      "weight": "73kg",
+      "birth_date": null,
+      "salary": 6700000,
+      "number": null,
+      "position": {
+        "key": "mid",
+        "short_label": "MID",
+        "label": "Midfielder"
+      },
+      "labels": [
+        {
+          "name": "O",
+          "text_color": "#fff",
+          "bg_color": "#9D2C31"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": 0,
+      "fantasy_score": 0
+    },
+    {
+      "id": 9000243,
+      "first_name": "Georginio",
+      "last_name": "Wijnaldum",
+      "height": "175cm",
+      "weight": "69kg",
+      "birth_date": null,
+      "salary": 9500000,
+      "number": "5",
+      "position": {
+        "key": "mid",
+        "short_label": "MID",
+        "label": "Midfielder"
+      },
+      "labels": [
+        {
+          "name": "C",
+          "text_color": "#fff",
+          "bg_color": "#459615"
+        },
+        {
+          "name": "SUB ON",
+          "text_color": "#fff",
+          "bg_color": "#459615"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": "0",
+      "fantasy_score": 4.9
+    },
+    {
+      "id": 9000244,
+      "first_name": "James",
+      "last_name": "Milner",
+      "height": "175cm",
+      "weight": "70kg",
+      "birth_date": null,
+      "salary": 12800000,
+      "number": null,
+      "position": {
+        "key": "mid",
+        "short_label": "MID",
+        "label": "Midfielder"
+      },
+      "labels": [
+        {
+          "name": "O",
+          "text_color": "#fff",
+          "bg_color": "#9D2C31"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": "0",
+      "fantasy_score": 0
+    },
+    {
+      "id": 9000245,
+      "first_name": "Philippe",
+      "last_name": "Coutinho",
+      "height": "171cm",
+      "weight": "71kg",
+      "birth_date": null,
+      "salary": 10700000,
+      "number": "10",
+      "position": {
+        "key": "mid",
+        "short_label": "MID",
+        "label": "Midfielder"
+      },
+      "labels": [
+        {
+          "name": "C",
+          "text_color": "#fff",
+          "bg_color": "#459615"
+        },
+        {
+          "name": "SUB OFF",
+          "text_color": "#fff",
+          "bg_color": "#9D2C31"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": "100",
+      "fantasy_score": 25.85
+    },
+    {
+      "id": 9000246,
+      "first_name": "Jordan",
+      "last_name": "Henderson",
+      "height": "182cm",
+      "weight": "67kg",
+      "birth_date": null,
+      "salary": 11300000,
+      "number": "14",
+      "position": {
+        "key": "mid",
+        "short_label": "MID",
+        "label": "Midfielder"
+      },
+      "labels": [
+        {
+          "name": "C",
+          "text_color": "#fff",
+          "bg_color": "#459615"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": "60",
+      "fantasy_score": 21.75
+    },
+    {
+      "id": 9000247,
+      "first_name": "Marko",
+      "last_name": "Grujic",
+      "height": "191cm",
+      "weight": "75kg",
+      "birth_date": null,
+      "salary": 3400000,
+      "number": null,
+      "position": {
+        "key": "mid",
+        "short_label": "MID",
+        "label": "Midfielder"
+      },
+      "labels": [
+        {
+          "name": "O",
+          "text_color": "#fff",
+          "bg_color": "#9D2C31"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": "0",
+      "fantasy_score": 0
+    }
+  ],
+  "fw": [
+    {
+      "id": 9000254,
+      "first_name": "Roberto",
+      "last_name": "Firmino",
+      "height": "181cm",
+      "weight": "76kg",
+      "birth_date": null,
+      "salary": 9800000,
+      "number": "11",
+      "position": {
+        "key": "fw",
+        "short_label": "FWD",
+        "label": "Forward"
+      },
+      "labels": [
+        {
+          "name": "C",
+          "text_color": "#fff",
+          "bg_color": "#459615"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": "100",
+      "fantasy_score": 13.95
+    },
+    {
+      "id": 9000255,
+      "first_name": "Daniel",
+      "last_name": "Sturridge",
+      "height": "188cm",
+      "weight": "76kg",
+      "birth_date": null,
+      "salary": 7200000,
+      "number": "15",
+      "position": {
+        "key": "fw",
+        "short_label": "FWD",
+        "label": "Forward"
+      },
+      "labels": [
+        {
+          "name": "C",
+          "text_color": "#fff",
+          "bg_color": "#459615"
+        },
+        {
+          "name": "SUB",
+          "text_color": "#fff",
+          "bg_color": "#E47108"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": "0",
+      "fantasy_score": 0
+    },
+    {
+      "id": 9000256,
+      "first_name": "Divock",
+      "last_name": "Origi",
+      "height": "185cm",
+      "weight": "75kg",
+      "birth_date": null,
+      "salary": 4600000,
+      "number": "27",
+      "position": {
+        "key": "fw",
+        "short_label": "FWD",
+        "label": "Forward"
+      },
+      "labels": [
+        {
+          "name": "C",
+          "text_color": "#fff",
+          "bg_color": "#459615"
+        },
+        {
+          "name": "SUB ON",
+          "text_color": "#fff",
+          "bg_color": "#459615"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": 0,
+      "fantasy_score": 3
+    },
+    {
+      "id": 9000257,
+      "first_name": "Danny",
+      "last_name": "Ings",
+      "height": "178cm",
+      "weight": "73kg",
+      "birth_date": null,
+      "salary": 4800000,
+      "number": null,
+      "position": {
+        "key": "fw",
+        "short_label": "FWD",
+        "label": "Forward"
+      },
+      "labels": [
+        {
+          "name": "O",
+          "text_color": "#fff",
+          "bg_color": "#9D2C31"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": 0,
+      "fantasy_score": 0
+    },
+    {
+      "id": 9000143,
+      "first_name": "Jonathan",
+      "last_name": "Benteke",
+      "height": "186cm",
+      "weight": "77kg",
+      "birth_date": null,
+      "salary": 3600000,
+      "number": null,
+      "position": {
+        "key": "fw",
+        "short_label": "FWD",
+        "label": "Forward"
+      },
+      "labels": [
+        {
+          "name": "O",
+          "text_color": "#fff",
+          "bg_color": "#9D2C31"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": "0",
+      "fantasy_score": 0
+    },
+    {
+      "id": 9000142,
+      "first_name": "Fraizer",
+      "last_name": "Campbell",
+      "height": "172cm",
+      "weight": "82kg",
+      "birth_date": null,
+      "salary": 3000000,
+      "number": "9",
+      "position": {
+        "key": "fw",
+        "short_label": "FWD",
+        "label": "Forward"
+      },
+      "labels": [
+        {
+          "name": "C",
+          "text_color": "#fff",
+          "bg_color": "#459615"
+        },
+        {
+          "name": "SUB ON",
+          "text_color": "#fff",
+          "bg_color": "#459615"
+        }
+      ],
+      "average_fantasy_score": 0,
+      "selected_percentage": "0",
+      "fantasy_score": 5.5
+    }
+  ]
+}

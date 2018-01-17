@@ -1,0 +1,53 @@
+<?xml version='1.0'?>
+   <font>
+       <info aa='1' size='20' smooth='1' stretchH='100' bold='0' padding='0,0,0,0' spacing='0,0' charset='' italic='0' unicode='0' face='Phosphate'/>
+       <common scaleW='128' packed='0' pages='1' lineHeight='24' scaleH='128' base='19'/>
+       <pages>
+            <page id='0' file='phosphate.png'/>
+       </pages>
+        <chars count='29'>
+            <char xadvance='4' x='118' chnl='0' yoffset='19' y='2' xoffset='0' id='32' page='0' height='0' width='0'/>
+            <char xadvance='13' x='2' chnl='0' yoffset='5' y='92' xoffset='0' id='65' page='0' height='16' width='16'/>
+            <char xadvance='12' x='68' chnl='0' yoffset='5' y='20' xoffset='1' id='66' page='0' height='16' width='14'/>
+            <char xadvance='13' x='2' chnl='0' yoffset='5' y='74' xoffset='1' id='67' page='0' height='16' width='16'/>
+            <char xadvance='13' x='52' chnl='0' yoffset='5' y='20' xoffset='1' id='68' page='0' height='16' width='14'/>
+            <char xadvance='10' x='36' chnl='0' yoffset='5' y='74' xoffset='1' id='69' page='0' height='16' width='10'/>
+            <char xadvance='9' x='36' chnl='0' yoffset='5' y='56' xoffset='1' id='70' page='0' height='16' width='10'/>
+            <char xadvance='14' x='2' chnl='0' yoffset='5' y='56' xoffset='1' id='71' page='0' height='16' width='16'/>
+            <char xadvance='13' x='36' chnl='0' yoffset='5' y='20' xoffset='1' id='72' page='0' height='16' width='14'/>
+            <char xadvance='6' x='36' chnl='0' yoffset='5' y='92' xoffset='1' id='73' page='0' height='16' width='8'/>
+            <char xadvance='8' x='36' chnl='0' yoffset='5' y='38' xoffset='0' id='74' page='0' height='16' width='10'/>
+            <char xadvance='13' x='2' chnl='0' yoffset='5' y='38' xoffset='1' id='75' page='0' height='16' width='16'/>
+            <char xadvance='9' x='112' chnl='0' yoffset='5' y='20' xoffset='1' id='76' page='0' height='16' width='12'/>
+            <char xadvance='16' x='2' chnl='0' yoffset='5' y='20' xoffset='1' id='77' page='0' height='16' width='16'/>
+            <char xadvance='13' x='20' chnl='0' yoffset='5' y='92' xoffset='1' id='78' page='0' height='16' width='14'/>
+            <char xadvance='15' x='100' chnl='0' yoffset='5' y='2' xoffset='1' id='79' page='0' height='16' width='16'/>
+            <char xadvance='12' x='20' chnl='0' yoffset='5' y='74' xoffset='1' id='80' page='0' height='16' width='14'/>
+            <char xadvance='15' x='26' chnl='0' yoffset='5' y='2' xoffset='1' id='81' page='0' height='16' width='18'/>
+            <char xadvance='12' x='20' chnl='0' yoffset='5' y='56' xoffset='1' id='82' page='0' height='16' width='14'/>
+            <char xadvance='9' x='98' chnl='0' yoffset='5' y='20' xoffset='1' id='83' page='0' height='16' width='12'/>
+            <char xadvance='10' x='84' chnl='0' yoffset='5' y='20' xoffset='0' id='84' page='0' height='16' width='12'/>
+            <char xadvance='13' x='20' chnl='0' yoffset='5' y='38' xoffset='1' id='85' page='0' height='16' width='14'/>
+            <char xadvance='14' x='82' chnl='0' yoffset='5' y='2' xoffset='0' id='86' page='0' height='16' width='16'/>
+            <char xadvance='18' x='2' chnl='0' yoffset='5' y='2' xoffset='0' id='87' page='0' height='16' width='22'/>
+            <char xadvance='12' x='64' chnl='0' yoffset='5' y='2' xoffset='0' id='88' page='0' height='16' width='16'/>
+            <char xadvance='12' x='46' chnl='0' yoffset='5' y='2' xoffset='0' id='89' page='0' height='16' width='16'/>
+            <char xadvance='11' x='20' chnl='0' yoffset='5' y='20' xoffset='0' id='90' page='0' height='16' width='14'/>
+            <char xadvance='6' x='2' chnl='0' yoffset='15' y='118' xoffset='1' id='46' page='0' height='6' width='8'/>
+            <char xadvance='7' x='2' chnl='0' yoffset='10' y='110' xoffset='1' id='45' page='0' height='6' width='8'/>
+       </chars>
+       <kernings count="12">
+            <kerning first="76" second="86" amount="-1"/>
+            <kerning first="76" second="89" amount="-1"/>
+            <kerning first="70" second="46" amount="-1"/>
+            <kerning first="89" second="65" amount="-1"/>
+            <kerning first="80" second="46" amount="-1"/>
+            <kerning first="86" second="46" amount="-1"/>
+            <kerning first="46" second="86" amount="-1"/>
+            <kerning first="46" second="89" amount="-1"/>
+            <kerning first="65" second="86" amount="-1"/>
+            <kerning first="65" second="89" amount="-1"/>
+            <kerning first="86" second="65" amount="-1"/>
+            <kerning first="89" second="46" amount="-1"/>
+       </kernings>
+   </font>

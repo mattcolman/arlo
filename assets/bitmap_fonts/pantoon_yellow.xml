@@ -1,0 +1,23 @@
+<?xml version='1.0'?>
+   <font>
+       <info aa='1' size='16' smooth='1' stretchH='100' bold='0' padding='0,0,0,0' spacing='0,0' charset='' italic='0' unicode='0' face='Panton ExtraBold'/>
+       <common scaleW='64' packed='0' pages='1' lineHeight='20' scaleH='64' base='16'/>
+       <pages>
+            <page id='0' file='pantoon_yellow.png'/>
+       </pages>
+        <chars count='13'>
+            <char xadvance='4' x='10' chnl='0' yoffset='16' y='52' xoffset='0' id='32' page='0' height='0' width='0'/>
+            <char xadvance='4' x='2' chnl='0' yoffset='11' y='52' xoffset='0' id='44' page='0' height='8' width='6'/>
+            <char xadvance='11' x='44' chnl='0' yoffset='4' y='18' xoffset='1' id='48' page='0' height='14' width='12'/>
+            <char xadvance='8' x='30' chnl='0' yoffset='4' y='34' xoffset='1' id='49' page='0' height='14' width='10'/>
+            <char xadvance='10' x='30' chnl='0' yoffset='4' y='18' xoffset='0' id='50' page='0' height='14' width='12'/>
+            <char xadvance='10' x='16' chnl='0' yoffset='4' y='34' xoffset='1' id='51' page='0' height='14' width='12'/>
+            <char xadvance='11' x='16' chnl='0' yoffset='4' y='18' xoffset='1' id='52' page='0' height='14' width='12'/>
+            <char xadvance='10' x='44' chnl='0' yoffset='4' y='2' xoffset='1' id='53' page='0' height='14' width='12'/>
+            <char xadvance='11' x='30' chnl='0' yoffset='4' y='2' xoffset='1' id='54' page='0' height='14' width='12'/>
+            <char xadvance='9' x='16' chnl='0' yoffset='4' y='2' xoffset='2' id='55' page='0' height='14' width='12'/>
+            <char xadvance='11' x='2' chnl='0' yoffset='4' y='36' xoffset='1' id='56' page='0' height='14' width='12'/>
+            <char xadvance='11' x='2' chnl='0' yoffset='4' y='20' xoffset='1' id='57' page='0' height='14' width='12'/>
+            <char xadvance='10' x='2' chnl='0' yoffset='2' y='2' xoffset='1' id='36' page='0' height='16' width='12'/>
+       </chars>
+   </font>

@@ -1,0 +1,383 @@
+{
+  "font": {
+    "info": {
+      "_aa": "1",
+      "_size": "34",
+      "_smooth": "1",
+      "_stretchH": "100",
+      "_bold": "0",
+      "_padding": "0,0,0,0",
+      "_spacing": "0,0",
+      "_italic": "0",
+      "_unicode": "0",
+      "_face": "Panton ExtraBold"
+    },
+    "common": {
+      "_scaleW": "192",
+      "_packed": "0",
+      "_pages": "1",
+      "_lineHeight": "48",
+      "_scaleH": "192",
+      "_base": "40"
+    },
+    "pages": {
+      "page": {
+        "_id": "0",
+        "_file": "pantoon_white.png"
+      }
+    },
+    "chars": {
+      "_count": "29",
+      "char": [
+        {
+          "_xadvance": "7",
+          "_x": "178",
+          "_chnl": "0",
+          "_yoffset": "33",
+          "_y": "2",
+          "_xoffset": "0",
+          "_id": "32",
+          "_page": "0",
+          "_height": "0",
+          "_width": "0"
+        },
+        {
+          "_xadvance": "21",
+          "_x": "2",
+          "_chnl": "0",
+          "_yoffset": "6",
+          "_y": "108",
+          "_xoffset": "1",
+          "_id": "36",
+          "_page": "0",
+          "_height": "36",
+          "_width": "28"
+        },
+        {
+          "_xadvance": "9",
+          "_x": "168",
+          "_chnl": "0",
+          "_yoffset": "27",
+          "_y": "106",
+          "_xoffset": "0",
+          "_id": "44",
+          "_page": "0",
+          "_height": "18",
+          "_width": "14"
+        },
+        {
+          "_xadvance": "22",
+          "_x": "128",
+          "_chnl": "0",
+          "_yoffset": "7",
+          "_y": "36",
+          "_xoffset": "3",
+          "_id": "48",
+          "_page": "0",
+          "_height": "34",
+          "_width": "28"
+        },
+        {
+          "_xadvance": "15",
+          "_x": "126",
+          "_chnl": "0",
+          "_yoffset": "9",
+          "_y": "106",
+          "_xoffset": "3",
+          "_id": "49",
+          "_page": "0",
+          "_height": "32",
+          "_width": "20"
+        },
+        {
+          "_xadvance": "21",
+          "_x": "128",
+          "_chnl": "0",
+          "_yoffset": "9",
+          "_y": "72",
+          "_xoffset": "0",
+          "_id": "50",
+          "_page": "0",
+          "_height": "32",
+          "_width": "28"
+        },
+        {
+          "_xadvance": "22",
+          "_x": "98",
+          "_chnl": "0",
+          "_yoffset": "7",
+          "_y": "36",
+          "_xoffset": "1",
+          "_id": "51",
+          "_page": "0",
+          "_height": "34",
+          "_width": "28"
+        },
+        {
+          "_xadvance": "22",
+          "_x": "98",
+          "_chnl": "0",
+          "_yoffset": "9",
+          "_y": "72",
+          "_xoffset": "1",
+          "_id": "52",
+          "_page": "0",
+          "_height": "32",
+          "_width": "28"
+        },
+        {
+          "_xadvance": "21",
+          "_x": "68",
+          "_chnl": "0",
+          "_yoffset": "9",
+          "_y": "140",
+          "_xoffset": "1",
+          "_id": "53",
+          "_page": "0",
+          "_height": "32",
+          "_width": "28"
+        },
+        {
+          "_xadvance": "22",
+          "_x": "68",
+          "_chnl": "0",
+          "_yoffset": "7",
+          "_y": "36",
+          "_xoffset": "3",
+          "_id": "54",
+          "_page": "0",
+          "_height": "34",
+          "_width": "28"
+        },
+        {
+          "_xadvance": "19",
+          "_x": "98",
+          "_chnl": "0",
+          "_yoffset": "9",
+          "_y": "106",
+          "_xoffset": "3",
+          "_id": "55",
+          "_page": "0",
+          "_height": "32",
+          "_width": "26"
+        },
+        {
+          "_xadvance": "22",
+          "_x": "38",
+          "_chnl": "0",
+          "_yoffset": "7",
+          "_y": "144",
+          "_xoffset": "2",
+          "_id": "56",
+          "_page": "0",
+          "_height": "34",
+          "_width": "28"
+        },
+        {
+          "_xadvance": "22",
+          "_x": "38",
+          "_chnl": "0",
+          "_yoffset": "7",
+          "_y": "108",
+          "_xoffset": "1",
+          "_id": "57",
+          "_page": "0",
+          "_height": "34",
+          "_width": "28"
+        },
+        {
+          "_xadvance": "23",
+          "_x": "2",
+          "_chnl": "0",
+          "_yoffset": "9",
+          "_y": "146",
+          "_xoffset": "1",
+          "_id": "65",
+          "_page": "0",
+          "_height": "32",
+          "_width": "30"
+        },
+        {
+          "_xadvance": "22",
+          "_x": "38",
+          "_chnl": "0",
+          "_yoffset": "7",
+          "_y": "72",
+          "_xoffset": "2",
+          "_id": "67",
+          "_page": "0",
+          "_height": "34",
+          "_width": "28"
+        },
+        {
+          "_xadvance": "23",
+          "_x": "146",
+          "_chnl": "0",
+          "_yoffset": "9",
+          "_y": "2",
+          "_xoffset": "1",
+          "_id": "68",
+          "_page": "0",
+          "_height": "32",
+          "_width": "30"
+        },
+        {
+          "_xadvance": "20",
+          "_x": "68",
+          "_chnl": "0",
+          "_yoffset": "9",
+          "_y": "106",
+          "_xoffset": "1",
+          "_id": "69",
+          "_page": "0",
+          "_height": "32",
+          "_width": "28"
+        },
+        {
+          "_xadvance": "20",
+          "_x": "68",
+          "_chnl": "0",
+          "_yoffset": "9",
+          "_y": "72",
+          "_xoffset": "1",
+          "_id": "70",
+          "_page": "0",
+          "_height": "32",
+          "_width": "28"
+        },
+        {
+          "_xadvance": "23",
+          "_x": "2",
+          "_chnl": "0",
+          "_yoffset": "7",
+          "_y": "72",
+          "_xoffset": "2",
+          "_id": "71",
+          "_page": "0",
+          "_height": "34",
+          "_width": "30"
+        },
+        {
+          "_xadvance": "10",
+          "_x": "148",
+          "_chnl": "0",
+          "_yoffset": "9",
+          "_y": "106",
+          "_xoffset": "1",
+          "_id": "73",
+          "_page": "0",
+          "_height": "32",
+          "_width": "18"
+        },
+        {
+          "_xadvance": "22",
+          "_x": "80",
+          "_chnl": "0",
+          "_yoffset": "9",
+          "_y": "2",
+          "_xoffset": "1",
+          "_id": "75",
+          "_page": "0",
+          "_height": "32",
+          "_width": "32"
+        },
+        {
+          "_xadvance": "19",
+          "_x": "98",
+          "_chnl": "0",
+          "_yoffset": "9",
+          "_y": "140",
+          "_xoffset": "3",
+          "_id": "76",
+          "_page": "0",
+          "_height": "32",
+          "_width": "24"
+        },
+        {
+          "_xadvance": "28",
+          "_x": "42",
+          "_chnl": "0",
+          "_yoffset": "9",
+          "_y": "2",
+          "_xoffset": "1",
+          "_id": "77",
+          "_page": "0",
+          "_height": "32",
+          "_width": "36"
+        },
+        {
+          "_xadvance": "22",
+          "_x": "158",
+          "_chnl": "0",
+          "_yoffset": "9",
+          "_y": "72",
+          "_xoffset": "3",
+          "_id": "80",
+          "_page": "0",
+          "_height": "32",
+          "_width": "26"
+        },
+        {
+          "_xadvance": "23",
+          "_x": "158",
+          "_chnl": "0",
+          "_yoffset": "9",
+          "_y": "36",
+          "_xoffset": "3",
+          "_id": "82",
+          "_page": "0",
+          "_height": "32",
+          "_width": "28"
+        },
+        {
+          "_xadvance": "22",
+          "_x": "38",
+          "_chnl": "0",
+          "_yoffset": "7",
+          "_y": "36",
+          "_xoffset": "2",
+          "_id": "83",
+          "_page": "0",
+          "_height": "34",
+          "_width": "28"
+        },
+        {
+          "_xadvance": "32",
+          "_x": "2",
+          "_chnl": "0",
+          "_yoffset": "9",
+          "_y": "2",
+          "_xoffset": "3",
+          "_id": "87",
+          "_page": "0",
+          "_height": "32",
+          "_width": "38"
+        },
+        {
+          "_xadvance": "23",
+          "_x": "114",
+          "_chnl": "0",
+          "_yoffset": "9",
+          "_y": "2",
+          "_xoffset": "1",
+          "_id": "89",
+          "_page": "0",
+          "_height": "32",
+          "_width": "30"
+        },
+        {
+          "_xadvance": "29",
+          "_x": "2",
+          "_chnl": "0",
+          "_yoffset": "7",
+          "_y": "36",
+          "_xoffset": "1",
+          "_id": "37",
+          "_page": "0",
+          "_height": "34",
+          "_width": "34"
+        }
+      ]
+    }
+  }
+}

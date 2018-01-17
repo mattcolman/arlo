@@ -1,6 +1,4 @@
 import round from 'lodash/round';
-import isArray from 'lodash/isArray';
-import moment from 'moment';
 
 export function transformise(string) {
   const str = string.toLowerCase()
@@ -33,19 +31,4 @@ export function numberWithCommas(x) {
 export function dollarize(dollars, decimalPlaces = 0) {
   const value = round(dollars, decimalPlaces);
   return `$${numberWithCommas(value)}`;
-}
-
-export function calculateRemainingTime(unlockTime) {
-  const seconds = moment(unlockTime).diff(moment(), 'seconds');
-  return Math.max(seconds, 0);
-}
-
-export function customizer(objValue, srcValue) {
-  if (isArray(objValue)) {
-    return [
-      ...objValue,
-      ...srcValue,
-    ];
-  }
-  return undefined;
 }
