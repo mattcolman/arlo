@@ -27,9 +27,8 @@ const Debug = {
 
 export default class extends Phaser.State {
   create() {
-    const playersJson = this.game.cache.getJSON('jsony');
+    const playersJson = this.game.cache.getJSON('players_json');
     this.playersData = mapValues(playersJson, arr => arr.map(p => decodePlayer(p)));
-    // window.Data = this.playersData;
     this.positionKeys = Object.keys(this.playersData);
 
     this.valueTweener = new ValueTweener();

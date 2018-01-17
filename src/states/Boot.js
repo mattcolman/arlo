@@ -1,6 +1,7 @@
 import ManifestLoader from 'phaser-manifest-loader';
 import PlayersJson from '../../lib/players.json';
 import Main from './Main';
+import '../../assets/fonts/panton/stylesheet.css';
 
 const { Phaser } = window;
 
@@ -11,17 +12,16 @@ const MANIFEST = {
   spritesheets: ['assets', 'players'],
   images: ['background', 'star_particle', 'blue_particle'],
   bitmap_fonts: ['pantoon_white', 'pantoon_yellow', 'phosphate'],
-  // fonts: {
-  //   custom: {
-  //     families: ['panton_extraboldregular'],
-  //   },
-  // },
+  fonts: {
+    custom: {
+      families: ['panton_extraboldregular'],
+    },
+  },
 };
 
 export default class extends Phaser.State {
   create() {
-    console.log('go');
-    this.game.load.json('jsony', PlayersJson);
+    this.game.load.json('players_json', PlayersJson);
     const loader = this.game.plugins.add(ManifestLoader, req);
     loader.loadManifest(MANIFEST).then(() => {
       console.log('loaded!');
