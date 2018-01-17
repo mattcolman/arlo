@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import Game from './Game';
 import BootState from './states/Boot';
 
 const defaultProps = {
@@ -23,7 +22,7 @@ function createMainGame(parent, props = {}) {
     parent,
     resolution: initialProps.resolution,
     state: BootState,
-    renderer: Phaser.CANVAS,
+    renderer: Phaser.AUTO,
   };
 
   const game = new Phaser.Game(config);
