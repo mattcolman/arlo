@@ -1,0 +1,36 @@
+{"frames": [
+
+{
+	"filename": "down",
+	"frame": {"x":1,"y":1,"w":256,"h":916},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":256,"h":916},
+	"sourceSize": {"w":256,"h":916}
+},
+{
+	"filename": "middle",
+	"frame": {"x":259,"y":1,"w":256,"h":916},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":256,"h":916},
+	"sourceSize": {"w":256,"h":916}
+},
+{
+	"filename": "up",
+	"frame": {"x":517,"y":1,"w":256,"h":916},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":256,"h":916},
+	"sourceSize": {"w":256,"h":916}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "crank_2x.png",
+	"format": "RGBA8888",
+	"size": {"w":1024,"h":1024},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:afe2c3a1dbcc139e699e1662e5a1e37b:f47e3ba8ea8a5f9d16c34c76f238c260:77d9649e3b81821432398a0b82024acc$"
+}
+}

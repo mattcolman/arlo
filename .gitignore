@@ -1,0 +1,11 @@
+node_modules/
+dist/
+public/
+.vscode/
+working/
+*.fnt
+*.atlas/
+*.log
+*.zip
+*.dbproj
+*/library/*

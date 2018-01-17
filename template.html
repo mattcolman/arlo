@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-NC2P5SW');</script>
+        <!-- End Google Tag Manager -->
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-title" content="Brett Lee's Super Over">
+        <meta property="application-name" content="Brett Lee's Super Over">
+        <meta property="og:url" content="https://superover.playup.com">
+        <meta property="og:title" content="Brett Lee's Super Over">
+        <meta property="og:description" content="Face an over from Brett for the chance to win a Signed Prize Pack worth $5,000!">
+        <meta property="og:image" content="https://superover.playup.com/ogimage.jpg">
+        <meta property="og:image:width" content="600" />
+        <meta property="og:image:height" content="315" />
+        <link rel="apple-touch-icon" sizes="180x180" type="image/png" href="/apple-touch-icon.png">
+        <link rel="icon" sizes="32x32" type="image/png" href="/favicon-32x32.png">
+        <link rel="icon" sizes="16x16" type="image/png" href="/favicon-16x16.png">
+        <title>Brett Lee's Super Over</title>
+        <meta name="description" content="Face an over from Brett for the chance to win a Signed Prize Pack worth $5,000!">
+        <meta name="keywords" content="brett lee, playup, superover, fantasy sports">
+        <base href="/"/>
+
+        <style>
+            html,
+            body {
+              margin: 0;
+              padding: 0;
+              background-color: #82cdec;
+              font-family: Ubuntu, -apple-system, BlinkMacSystemFont, Helvetica Neue, Helvetica, Arial, sans-serif;
+            }
+            input,
+            button,
+            select,
+            textarea {
+            	font-family: inherit;
+            	font-size: inherit;
+            	line-height: inherit;
+            }
+            #outer {
+              display: flex;
+              justify-content: center;
+              width: 100vw;
+              height: 100vh;
+            }
+            #game {
+              position: absolute;
+              left: 50%;
+              transform: translateX(-50%);
+            }
+            @media only screen and (min-width: 1280px) {
+              #outer {
+                align-items: center;
+              }
+              #game {
+                border-radius: 8px;
+                border: 10px solid #f5b84f;
+                position: relative;
+                left: auto;
+                transform: none;
+                max-width: 100vw;
+                max-height: 100vh;
+                justify-content: center;
+              }
+              #grass {
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                background-repeat: no-repeat;
+                background-size: contain;
+                width: 100%;
+                max-width: 1800px;
+                background-position-x: center;
+                background-position-y: bottom;
+                pointer-events: none;
+                height: 265px;
+                background-image: url('grass.png');
+              }
+              #cloud1 {
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                width: 350px;
+                height: 200px;
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-image: url('cloud.png');
+              }
+              #cloud2 {
+                position: absolute;
+                top: 100px;
+                right: 10px;
+                width: 350px;
+                height: 200px;
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-image: url('cloud.png');
+              }
+            }
+        </style>
+
+    </head>
+    <body>
+      <!-- Google Tag Manager (noscript) -->
+      <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NC2P5SW"
+      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+      <!-- End Google Tag Manager (noscript) -->
+      <div id="cloud1"></div>
+      <div id="cloud2"></div>
+      <div id="outer">
+        <div id="game"></div>
+      </div>
+      <div id="grass"></div>
+      <div id="app" />
+      <script src="phaser.min.js"></script>
+      <script src="lib/TweenMax.min.js"></script>
+      <script src="lib/dragonbones.min.js"></script>
+      <script src="lib/dragonbones_phaser.min.js"></script>
+    </body>
+</html>

@@ -1,0 +1,22 @@
+<?xml version='1.0'?>
+   <font>
+       <info aa='1' size='64' smooth='1' stretchH='100' bold='0' padding='0,0,0,0' spacing='0,0' charset='' italic='0' unicode='0' face='DS-Digital'/>
+       <common scaleW='256' packed='0' pages='1' lineHeight='64' scaleH='256' base='53'/>
+       <pages>
+            <page id='0' file='digital_red.png'/>
+       </pages>
+        <chars count='12'>
+            <char xadvance='16' x='2' chnl='0' yoffset='53' y='232' xoffset='0' id='32' page='0' height='0' width='0'/>
+            <char xadvance='32' x='32' chnl='0' yoffset='11' y='2' xoffset='4' id='48' page='0' height='44' width='28'/>
+            <char xadvance='17' x='148' chnl='0' yoffset='12' y='2' xoffset='7' id='49' page='0' height='42' width='8'/>
+            <char xadvance='32' x='2' chnl='0' yoffset='11' y='186' xoffset='4' id='50' page='0' height='44' width='28'/>
+            <char xadvance='32' x='92' chnl='0' yoffset='11' y='2' xoffset='5' id='51' page='0' height='44' width='26'/>
+            <char xadvance='32' x='62' chnl='0' yoffset='12' y='2' xoffset='4' id='52' page='0' height='42' width='28'/>
+            <char xadvance='32' x='2' chnl='0' yoffset='11' y='140' xoffset='4' id='53' page='0' height='44' width='28'/>
+            <char xadvance='32' x='2' chnl='0' yoffset='11' y='94' xoffset='4' id='54' page='0' height='44' width='28'/>
+            <char xadvance='32' x='120' chnl='0' yoffset='12' y='2' xoffset='5' id='55' page='0' height='42' width='26'/>
+            <char xadvance='32' x='2' chnl='0' yoffset='11' y='48' xoffset='4' id='56' page='0' height='44' width='28'/>
+            <char xadvance='32' x='2' chnl='0' yoffset='11' y='2' xoffset='4' id='57' page='0' height='44' width='28'/>
+            <char xadvance='15' x='158' chnl='0' yoffset='19' y='2' xoffset='5' id='58' page='0' height='36' width='8'/>
+       </chars>
+   </font>

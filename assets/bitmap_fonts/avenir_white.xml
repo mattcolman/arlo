@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+   <font>
+       <info aa='1' size='50' smooth='1' stretchH='100' bold='0' padding='0,0,0,0' spacing='0,0' charset='' italic='0' unicode='0' face='Avenir'/>
+       <common scaleW='128' packed='0' pages='1' lineHeight='68' scaleH='128' base='50'/>
+       <pages>
+            <page id='0' file='avenir_white.png'/>
+       </pages>
+        <chars count='11'>
+            <char xadvance='14' x='118' chnl='0' yoffset='50' y='42' xoffset='0' id='32' page='0' height='0' width='0'/>
+            <char xadvance='30' x='2' chnl='0' yoffset='12' y='2' xoffset='2' id='48' page='0' height='40' width='30'/>
+            <char xadvance='30' x='94' chnl='0' yoffset='14' y='42' xoffset='4' id='49' page='0' height='38' width='22'/>
+            <char xadvance='30' x='64' chnl='0' yoffset='14' y='42' xoffset='3' id='50' page='0' height='38' width='28'/>
+            <char xadvance='30' x='34' chnl='0' yoffset='12' y='84' xoffset='2' id='51' page='0' height='40' width='28'/>
+            <char xadvance='30' x='34' chnl='0' yoffset='14' y='2' xoffset='2' id='52' page='0' height='38' width='30'/>
+            <char xadvance='30' x='96' chnl='0' yoffset='14' y='2' xoffset='2' id='53' page='0' height='38' width='28'/>
+            <char xadvance='30' x='2' chnl='0' yoffset='14' y='84' xoffset='2' id='54' page='0' height='38' width='30'/>
+            <char xadvance='30' x='66' chnl='0' yoffset='14' y='2' xoffset='2' id='55' page='0' height='38' width='28'/>
+            <char xadvance='30' x='34' chnl='0' yoffset='12' y='42' xoffset='3' id='56' page='0' height='40' width='28'/>
+            <char xadvance='30' x='2' chnl='0' yoffset='14' y='44' xoffset='2' id='57' page='0' height='38' width='30'/>
+       </chars>
+   </font>

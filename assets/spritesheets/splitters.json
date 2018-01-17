@@ -1,0 +1,28 @@
+{"frames": [
+
+{
+	"filename": "left",
+	"frame": {"x":1,"y":1,"w":7,"h":232},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":7,"h":232},
+	"sourceSize": {"w":7,"h":232}
+},
+{
+	"filename": "right",
+	"frame": {"x":10,"y":1,"w":7,"h":232},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":7,"h":232},
+	"sourceSize": {"w":7,"h":232}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "splitters.png",
+	"format": "RGBA8888",
+	"size": {"w":32,"h":256},
+	"scale": "0.5",
+	"smartupdate": "$TexturePacker:SmartUpdate:5ad9dde671f97b626f481fae06c9e7ab:e665aef7b64949d86530b5938d318b87:265ee1a606a9a72f76c13a7abd53a7a8$"
+}
+}
