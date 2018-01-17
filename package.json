@@ -25,7 +25,6 @@
     "moment": "^2.20.1",
     "moment-duration-format": "^2.2.0",
     "phaser": "^2.6.2",
-    "phaser-ce": "^2.9.4",
     "phaser-manifest-loader": "^3.0.0",
     "prop-types": "^15.6.0",
     "react": "^16.1.1",

@@ -26,7 +26,7 @@ module.exports = {
           to: path.resolve(__dirname, 'public'),
         },
         {
-          from: path.resolve(__dirname, 'node_modules/phaser-ce/build/phaser.js'),
+          from: path.resolve(__dirname, 'node_modules/phaser/build/phaser.js'),
           to: path.resolve(__dirname, 'public'),
         },
       ],
