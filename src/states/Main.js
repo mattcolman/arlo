@@ -7,7 +7,6 @@ import random from 'lodash/random';
 import reduce from 'lodash/reduce';
 import shuffle from 'lodash/shuffle';
 import 'gsap';
-// import PlayersJson from '../../lib/players.json';
 import Reel from '../groups/Reel';
 import { decodePlayer, dollarize } from '../utils';
 import { TILE_WIDTH, TILE_HEIGHT, SPACING } from '../constants';
@@ -22,7 +21,7 @@ const { TweenMax, TimelineMax, Linear, Strong, PIXI } = window;
 
 const Debug = {
   config: {
-    fps: true,
+    fps: false,
   },
 };
 
@@ -32,10 +31,7 @@ export default class extends Phaser.State {
     this.playersData = mapValues(playersJson, arr => arr.map(p => decodePlayer(p)));
     // window.Data = this.playersData;
     this.positionKeys = Object.keys(this.playersData);
-    console.log('players data', this.playersData);
 
-    // const highestSalary = reduce(this.playersData, (memo, arr) => memo + last(sortBy(arr, 'salary')).salary, 0);
-    // console.log('highestSalary', highestSalary);
     this.valueTweener = new ValueTweener();
     this.pool = new Pool();
     this.payoutTimer = new Phaser.Signal();
