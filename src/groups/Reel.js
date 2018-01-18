@@ -12,9 +12,6 @@ export default class Reel extends Phaser.Group {
   constructor(game, symbols) {
     super(game, null, 'reel');
 
-    this.timelineMax = this.game.state.getCurrentState().timelineMax;
-    this.tweenMax = this.game.state.getCurrentState().tweenMax;
-
     this.symbols = symbols;
     this.makeLine();
     this.maxHeight = this.height / 2;
@@ -27,24 +24,22 @@ export default class Reel extends Phaser.Group {
   }
 
   destroy() {
-    this.timelineMax = null;
-    this.tweenMax = null;
     this.blurY = null;
     this.grayFilter = null;
     super.destroy();
   }
 
   spin() {
-    this.tweenMax().killTweensOf(this.overlay);
+    TweenMax.killTweensOf(this.overlay);
     this.overlay.alpha = 1;
     this.overlay.visible = false;
     this.part[1].cards.forEach((card) => {
       card.filters = null;
     });
-    this.tweenMax().killTweensOf(this);
+    TweenMax.killTweensOf(this);
     this.y = 0;
     const DURATION = 0.22;
-    this.spinner = this.tweenMax().to(this, DURATION, {
+    this.spinner = TweenMax.to(this, DURATION, {
       onRepeat: this.handleRepeat,
       onRepeatScope: this,
       y: this.maxHeight,
@@ -72,13 +67,14 @@ export default class Reel extends Phaser.Group {
     ------------------------------------------------------- */
 
   stop(results) {
+    console.log('stop', results);
     // oddly, you actually have to pause before you kill
     // to ensure there's not another tick after this.
     this.spinner.pause().kill();
 
     this.setLine(results);
 
-    const tl = this.timelineMax({
+    const tl = new TimelineMax({
       onComplete: () => {
         this.filters = null;
 
@@ -98,7 +94,7 @@ export default class Reel extends Phaser.Group {
 
   glow() {
     this.overlay.visible = true;
-    this.tweenMax().to(this.overlay, 1, { alpha: 0, repeat: -1, yoyo: true });
+    TweenMax.to(this.overlay, 1, { alpha: 0, repeat: -1, yoyo: true });
   }
 
   handleRepeat() {
@@ -171,11 +167,11 @@ export default class Reel extends Phaser.Group {
     symbol.width = TILE_WIDTH;
     symbol.height = TILE_HEIGHT;
     grp.setSymbol = (symbolName) => {
-      console.log('setSymbol', symbolName);
       grp.name = symbolName;
       if (symbolName === 'symbols') {
         symbol.animations.play('symbols');
       } else {
+        symbol.animations.stop();
         symbol.frameName = symbolName;
       }
     };

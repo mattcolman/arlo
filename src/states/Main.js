@@ -29,6 +29,10 @@ const Debug = {
 // const Symbols = ['symbols', 'bball', 'football', 'baseball', 'cricket', 'soccer'];
 const Symbols = ['symbols', 'bball', 'football'];
 
+function getMockResults() {
+  return times(5, () => times(3, () => sample(Symbols)));
+}
+
 export default class extends Phaser.State {
   create() {
     this.valueTweener = new ValueTweener();
@@ -117,7 +121,10 @@ export default class extends Phaser.State {
     this.game.add.sound('click').play();
     this.spinSnd = this.game.add.sound('spin', 1, true);
     this.spinSnd.play();
-    const results = times(5, sample(Symbols));
+
+    // TODO request results from the backend
+    const results = getMockResults();
+
     const tl = new TimelineMax();
     this.reels.forEach((reel, i) => tl.call(reel.spin, [], reel, i * SPIN_DELAY));
     tl.call(this.stop, [results], this, 2);
@@ -129,7 +136,7 @@ export default class extends Phaser.State {
       (reel, i) =>
         new Promise(resolve =>
           TweenMax.delayedCall(i * SPIN_DELAY, () => {
-            reel.requestStop(results[reel.name], () => resolve());
+            reel.requestStop(results[i], () => resolve());
           }),
         ),
     );

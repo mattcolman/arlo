@@ -7,25 +7,27 @@ const config = require('./webpack.config');
 
 const port = 3001;
 
-const compiler = webpack(Object.assign({}, config, {
-  devtool: 'cheap-source-map',
-  entry: [
-    'webpack-dev-server/client',
-    'webpack/hot/dev-server',
-    'babel-polyfill',
-    path.resolve(__dirname, 'src/index.js'),
-  ],
-  output: {
-    path: path.resolve(__dirname, 'public'),
-    filename: 'bundle.js',
-    publicPath: '/',
-  },
-  plugins: [
-    ...config.plugins,
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
-  ],
-}));
+const compiler = webpack(
+  Object.assign({}, config, {
+    // devtool: 'cheap-source-map',
+    entry: [
+      'webpack-dev-server/client',
+      'webpack/hot/dev-server',
+      'babel-polyfill',
+      path.resolve(__dirname, 'src/index.js'),
+    ],
+    output: {
+      path: path.resolve(__dirname, 'public'),
+      filename: 'bundle.js',
+      publicPath: '/',
+    },
+    plugins: [
+      ...config.plugins,
+      new webpack.HotModuleReplacementPlugin(),
+      new webpack.NoEmitOnErrorsPlugin(),
+    ],
+  }),
+);
 
 const devServer = new WebpackDevServer(compiler, {
   hot: true,
