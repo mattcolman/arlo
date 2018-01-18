@@ -9,7 +9,7 @@ const req = require.context('../../assets', true, /.*\.png|json|ttf|woff|woff2|x
 
 const MANIFEST = {
   audio: ['click', 'spin', 'select', 'success'],
-  spritesheets: ['assets', 'players'],
+  spritesheets: ['symbols', 'assets'],
   images: ['background', 'star_particle', 'blue_particle'],
   bitmap_fonts: ['pantoon_white', 'pantoon_yellow', 'phosphate'],
   fonts: {

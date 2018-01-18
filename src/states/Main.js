@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import sample from 'lodash/sample';
 import times from 'lodash/times';
 import last from 'lodash/last';
 import sortBy from 'lodash/sortBy';
@@ -25,12 +26,11 @@ const Debug = {
   },
 };
 
+// const Symbols = ['symbols', 'bball', 'football', 'baseball', 'cricket', 'soccer'];
+const Symbols = ['symbols', 'bball', 'football'];
+
 export default class extends Phaser.State {
   create() {
-    const playersJson = this.game.cache.getJSON('players_json');
-    this.playersData = mapValues(playersJson, arr => arr.map(p => decodePlayer(p)));
-    this.positionKeys = Object.keys(this.playersData);
-
     this.valueTweener = new ValueTweener();
     this.pool = new Pool();
     this.payoutTimer = new Phaser.Signal();
@@ -74,7 +74,7 @@ export default class extends Phaser.State {
   addSlots() {
     this.fullReelGrp = this.add.group(this.world, 'full-reel-group');
 
-    const NUM_REELS = this.positionKeys.length;
+    const NUM_REELS = 5;
     const w = (TILE_WIDTH + SPACING) * NUM_REELS;
     const h = (TILE_HEIGHT + SPACING) * 3 - SPACING;
 
@@ -86,13 +86,7 @@ export default class extends Phaser.State {
     const reelGrp = this.add.group(this.fullReelGrp, 'reel-group');
     reelGrp.position.set(5, REEL_Y);
 
-    this.reels = this.positionKeys.map((key, i) =>
-      this.addReel(key, reelGrp, i * (TILE_WIDTH + SPACING), 0),
-    );
-
-    this.reelHeaders = this.positionKeys.map((key, i) =>
-      this.addReelHeader(key, this.fullReelGrp, i * (TILE_WIDTH + SPACING), 0),
-    );
+    this.reels = times(NUM_REELS, i => this.addReel(reelGrp, i * (TILE_WIDTH + SPACING), 0));
 
     // add mask
     const rect = this.make.graphics(0, 0);
@@ -123,7 +117,7 @@ export default class extends Phaser.State {
     this.game.add.sound('click').play();
     this.spinSnd = this.game.add.sound('spin', 1, true);
     this.spinSnd.play();
-    const results = mapValues(this.playersData, arr => shuffle(arr).slice(0, 3));
+    const results = times(5, sample(Symbols));
     const tl = new TimelineMax();
     this.reels.forEach((reel, i) => tl.call(reel.spin, [], reel, i * SPIN_DELAY));
     tl.call(this.stop, [results], this, 2);
@@ -147,120 +141,6 @@ export default class extends Phaser.State {
     this.renderSalaryBar();
     this.spinBtn.enable();
     this.enterChallengeBtn.enable();
-  }
-
-  enterChallengeClicked() {
-    this.spinBtn.disable();
-    this.enterChallengeBtn.disable();
-    this.game.add.sound('click').play();
-    this.game.add.sound('success').play();
-    TweenMax.to(this.bottomBar, 1, { y: '+=200' });
-
-    const players = this.reels.map(reel => reel.part[1].cards[1]);
-    players.forEach((card, i) => {
-      card.position.set(card.worldPosition.x, card.worldPosition.y);
-      card.scale.set(card.worldScale.x, card.worldScale.y);
-      TweenMax.to(card.getByName('burst'), 0.5, { alpha: 0, ease: Strong.easeOut });
-      this.world.addChild(card);
-      TweenMax.to(card, 1, { y: 400, delay: 0.4 + i * 0.1, ease: Strong.easeOut });
-    });
-
-    TweenMax.to(this.fullReelGrp.scale, 1, { x: 0, y: 0, alpha: 0 });
-
-    this.addEnterChallengeContent(this.world);
-  }
-
-  addEnterChallengeContent(parent) {
-    const h1 = this.game.add.text(
-      this.world.centerX,
-      90,
-      'CONGRATULATIONS!',
-      {
-        font: `60px ${Font.Panton.EXTRA_BOLD_REGULAR}`,
-        fill: Color.YELLOW,
-        align: 'center',
-        stroke: Color.BLACK,
-        strokeThickness: 4,
-      },
-      parent,
-    );
-    h1.anchor.set(0.5);
-
-    const h2 = this.game.add.text(
-      this.world.centerX,
-      210,
-      'YOU HAVE ENTERED IN\nTHE CHALLENGE',
-      {
-        font: `42px ${Font.Panton.EXTRA_BOLD_REGULAR}`,
-        fill: Color.DARK_BLUE,
-        align: 'center',
-        stroke: Color.WHITE,
-        strokeThickness: 4,
-      },
-      parent,
-    );
-    h2.lineSpacing = -10;
-    h2.anchor.set(0.5);
-
-    // buttons
-    const lb = this.game.add.button(
-      this.world.centerX + 100,
-      320,
-      'assets',
-      () => {
-        this.game.add.sound('click').play();
-      },
-      this,
-      'leaderboard',
-      'leaderboard',
-      'leaderboard_down',
-      'leaderboard',
-      parent,
-    );
-    lb.anchor.set(0.5);
-
-    const backBtn = this.game.add.button(
-      this.world.centerX - 100,
-      320,
-      'assets',
-      () => {
-        this.game.add.sound('click').play();
-        this.state.restart();
-      },
-      this,
-      'spin_again',
-      'spin_again',
-      'spin_again_down',
-      'spin_again',
-      parent,
-    );
-    backBtn.anchor.set(0.5);
-
-    const prizePoolTxt = this.game.add.text(
-      this.world.centerX - 190,
-      this.world.height - 100,
-      `PRIZE POOL: ${dollarize(this.payout)}`,
-      {
-        font: `42px ${Font.Panton.EXTRA_BOLD_REGULAR}`,
-        fill: Color.YELLOW,
-        align: 'center',
-        stroke: Color.BLACK,
-        strokeThickness: 4,
-      },
-      parent,
-    );
-
-    this.payoutTimer.add((value) => {
-      prizePoolTxt.text = `PRIZE POOL: ${dollarize(value)}`;
-    });
-
-    const tl = new TimelineMax({ delay: 1 });
-    tl
-      .from(h1, 1, { y: '+=50', alpha: 0, ease: Strong.easeOut })
-      .from(h2, 1, { y: '+=50', alpha: 0, ease: Strong.easeOut }, 0.2)
-      .from(backBtn, 1, { x: '-=50', alpha: 0, ease: Strong.easeOut }, 0.4)
-      .from(lb, 1, { x: '+=50', alpha: 0, ease: Strong.easeOut }, 0.4)
-      .from(prizePoolTxt, 1, { y: '+=50', alpha: 0, ease: Strong.easeOut }, 0.6);
   }
 
   /* -------------------------------------------------------
@@ -475,34 +355,10 @@ export default class extends Phaser.State {
       .to(p, duration, { angle: random(40, 100), ease: Linear.easeNone }, 0);
   }
 
-  addReel(key, parent, x, y) {
-    const reel = new Reel(this.game, key, this.playersData[key]);
+  addReel(parent, x, y) {
+    const reel = new Reel(this.game, Symbols);
     reel.position.set(x, y);
     parent.addChild(reel);
     return reel;
-  }
-
-  addReelHeader(key, parent, x, y) {
-    const reelHeader = this.makeReelHeader(key);
-    reelHeader.position.set(x, y);
-    parent.addChild(reelHeader);
-    return reelHeader;
-  }
-
-  makeReelHeader(name) {
-    const grp = this.game.make.group(null);
-    const img = this.game.add.image(0, 0, 'assets', 'bar', grp);
-    img.width = 163;
-    const style = { size: 26, font: 'pantoon_white' };
-    const txt = this.game.add.bitmapText(
-      img.width / 2 - 3,
-      img.height / 2 - 1,
-      style.font,
-      name.toUpperCase(),
-      style.size,
-      grp,
-    );
-    txt.anchor.set(0.5);
-    return grp;
   }
 }

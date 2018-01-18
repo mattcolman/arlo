@@ -1,45 +1,50 @@
+// import { times, shuffle } from 'lodash';
 import times from 'lodash/times';
 import shuffle from 'lodash/shuffle';
-import { transformise, dollarize } from '../utils';
+import sample from 'lodash/sample';
 import { TILE_WIDTH, TILE_HEIGHT, SPACING } from '../constants';
 import '../filters/BlurY';
 import '../filters/Gray';
 
-const {
-  TweenMax,
-  TimelineMax,
-  Back,
-  Linear,
-  Phaser,
-  PIXI,
-} = window;
+const { Back, Linear } = window;
 
 export default class Reel extends Phaser.Group {
-
-  constructor(game, name, players) {
+  constructor(game, symbols) {
     super(game, null, 'reel');
 
-    this.name = name;
-    this.players = players;
+    this.timelineMax = this.game.state.getCurrentState().timelineMax;
+    this.tweenMax = this.game.state.getCurrentState().tweenMax;
+
+    this.symbols = symbols;
     this.makeLine();
     this.maxHeight = this.height / 2;
     this.blurY = game.add.filter('BlurY');
     this.grayFilter = game.add.filter('Gray');
     this.stopping = false;
-    this.overlay = this.addOverlay(this, 0, -this.maxHeight + TILE_WIDTH + SPACING);
+    this.overlay = this.addOverlay(this, 0, -this.maxHeight + TILE_WIDTH);
+    this.blurY.blur = 0;
+    this.filters = [this.blurY];
+  }
+
+  destroy() {
+    this.timelineMax = null;
+    this.tweenMax = null;
+    this.blurY = null;
+    this.grayFilter = null;
+    super.destroy();
   }
 
   spin() {
-    console.log('spin', this.name);
-    TweenMax.killTweensOf(this.overlay);
+    this.tweenMax().killTweensOf(this.overlay);
     this.overlay.alpha = 1;
     this.overlay.visible = false;
     this.part[1].cards.forEach((card) => {
       card.filters = null;
     });
-    TweenMax.killTweensOf(this);
+    this.tweenMax().killTweensOf(this);
     this.y = 0;
-    this.spinner = TweenMax.to(this, 0.22, {
+    const DURATION = 0.22;
+    this.spinner = this.tweenMax().to(this, DURATION, {
       onRepeat: this.handleRepeat,
       onRepeatScope: this,
       y: this.maxHeight,
@@ -58,11 +63,9 @@ export default class Reel extends Phaser.Group {
   }
 
   setLine(results, part = 1) {
-    this.part[part].cards.map((card, i) => (
-      card.setPlayer(results[i])
-    ));
+    console.log('setLine', results);
+    this.part[part].cards.map((card, i) => card.setSymbol(results[i]));
   }
-
 
   /* -------------------------------------------------------
     -- PRIVATE
@@ -75,20 +78,27 @@ export default class Reel extends Phaser.Group {
 
     this.setLine(results);
 
-    const tl = new TimelineMax({
+    const tl = this.timelineMax({
       onComplete: () => {
         this.filters = null;
-        this.game.add.audio('select').play();
-        this.part[1].cards[0].filters = [this.grayFilter];
-        this.part[1].cards[2].filters = [this.grayFilter];
 
-        this.overlay.visible = true;
-        TweenMax.to(this.overlay, 1, { alpha: 0, repeat: -1, yoyo: true });
+        // this.part[1].cards[0].filters = [this.grayFilter];
+        // this.part[1].cards[2].filters = [this.grayFilter];
+
+        // this.overlay.visible = true;
+        // TweenMax.to(this.overlay, 1, { alpha: 0, repeat: -1, yoyo: true });
+
         this.onComplete();
       },
     });
-    tl.to(this, 0.8, { y: this.maxHeight, ease: Back.easeOut.config(1) })
+    tl
+      .to(this, 0.8, { y: this.maxHeight, ease: Back.easeOut.config(1) })
       .to(this.blurY, 0.8, { blur: 0, ease: Back.easeOut.config(1) }, 0);
+  }
+
+  glow() {
+    this.overlay.visible = true;
+    this.tweenMax().to(this.overlay, 1, { alpha: 0, repeat: -1, yoyo: true });
   }
 
   handleRepeat() {
@@ -97,8 +107,8 @@ export default class Reel extends Phaser.Group {
       this.results = null;
       this.stopping = false;
     } else {
-      this.setLine(this.part[1].cards.map(card => card.player), 0);
-      this.setLine(shuffle(this.players).slice(0, 3), 1);
+      this.setLine(this.part[1].cards.map(card => card.name), 0);
+      this.setLine(times(3, () => sample(this.symbols)), 1);
     }
   }
 
@@ -107,16 +117,14 @@ export default class Reel extends Phaser.Group {
     grp.position.set(x, y);
     grp.visible = false;
 
-    // outline
-    const ol = this.game.add.graphics(0, 0, grp);
-    ol.lineStyle(10, 0xffffff)
-      .drawRect(0, 0, TILE_WIDTH, TILE_HEIGHT);
-
     // overlay
     const g = this.game.add.graphics(0, 0, grp);
-    g.beginFill(0xfed700, 0.8)
-     .drawRect(0, 0, TILE_WIDTH, TILE_HEIGHT);
+    g.beginFill(0xfed700, 0.8).drawRect(0, 0, TILE_WIDTH, TILE_HEIGHT);
     g.blendMode = PIXI.blendModes.ADD;
+
+    // outline
+    const ol = this.game.add.graphics(0, 0, grp);
+    ol.lineStyle(10, 0xf4c60b).drawRect(0, 0, TILE_WIDTH, TILE_HEIGHT);
 
     return grp;
   }
@@ -128,7 +136,8 @@ export default class Reel extends Phaser.Group {
     this.addChild(line);
     this.addChild(line2);
     this.part = [line, line2];
-    this.part.map((part, i) => this.setLine(shuffle(this.players).slice(0, 3), i));
+    this.part.map((part, i) => this.setLine(times(3, () => sample(this.symbols)), i));
+    // this.part.map((part, i) => this.setLine(this.symbols.slice(0, 3), i));
   }
 
   makeSingleLine() {
@@ -138,7 +147,7 @@ export default class Reel extends Phaser.Group {
     grp.cards = times(numCards).map(() => {
       const card = this.makeCard(grp);
       card.y = y;
-      y += card.height + SPACING;
+      y += card.height;
       return card;
     });
     return grp;
@@ -146,60 +155,29 @@ export default class Reel extends Phaser.Group {
 
   makeCard(parent) {
     const grp = this.game.add.group(parent);
+    // const width = TILE_WIDTH;
+    // const height = TILE_HEIGHT;
 
-    const burst = this.game.add.sprite(0, 0, 'assets', null, grp);
-    burst.name = 'burst';
-    const width = TILE_WIDTH;
-    const height = TILE_HEIGHT;
-    const player = this.game.add.sprite(0, 0, 'players', null, grp);
-    player.name = 'player';
-    const textBack = this.game.add.image(0, height, 'assets', 'card_bottom', grp);
-    textBack.anchor.set(0, 1);
-    textBack.height = 57;
-    const style = { size: 16, font: 'phosphate' };
-    const firstNameTxt = this.game.add.bitmapText(
-      width / 2,
-      height - 36,
-      style.font,
-      '',
-      style.size,
-      grp
+    // temp is to make sure blur filter works...bug
+    // const temp = this.game.add.image(0, 0, 'star_particle', null, grp);
+    // temp.alpha = 0.1;
+    const symbol = this.game.add.sprite(0, 0, 'symbols', null, grp);
+    const anim = symbol.animations.add(
+      'symbols',
+      Phaser.Animation.generateFrameNames('symbols', 1, 64, '', 4),
+      30,
+      true,
     );
-    firstNameTxt.anchor.set(0.5, 1);
-    firstNameTxt.name = 'firstNameText';
-
-    const lastNameTxt = this.game.add.bitmapText(
-      width / 2,
-      height - 20,
-      style.font,
-      '',
-      style.size,
-      grp
-    );
-    lastNameTxt.anchor.set(0.5, 1);
-    lastNameTxt.name = 'lastNameText';
-
-    const salaryTxt = this.game.add.bitmapText(
-      width / 2,
-      height - 3,
-      'pantoon_yellow',
-      '',
-      16,
-      grp
-    );
-    salaryTxt.anchor.set(0.5, 1);
-    salaryTxt.name = 'salaryText';
-
-    grp.setPlayer = (p) => {
-      grp.player = p;
-      grp.getByName('burst').frameName = `burst_${p.id % 3 + 1}`;
-      grp.getByName('player').frameName = transformise(p.fullName);
-      const firstName = grp.getByName('firstNameText');
-      firstName.text = p.firstName.toUpperCase();
-      const lastName = grp.getByName('lastNameText');
-      lastName.text = p.lastName.toUpperCase();
-      const salary = grp.getByName('salaryText');
-      salary.text = dollarize(p.salary);
+    symbol.width = TILE_WIDTH;
+    symbol.height = TILE_HEIGHT;
+    grp.setSymbol = (symbolName) => {
+      console.log('setSymbol', symbolName);
+      grp.name = symbolName;
+      if (symbolName === 'symbols') {
+        symbol.animations.play('symbols');
+      } else {
+        symbol.frameName = symbolName;
+      }
     };
 
     return grp;
