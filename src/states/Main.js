@@ -1,6 +1,10 @@
 import Phaser from 'phaser';
 import sample from 'lodash/sample';
+import get from 'lodash/get';
+import take from 'lodash/take';
 import times from 'lodash/times';
+import without from 'lodash/without';
+import fill from 'lodash/fill';
 import last from 'lodash/last';
 import sortBy from 'lodash/sortBy';
 import mapValues from 'lodash/mapValues';
@@ -9,15 +13,11 @@ import reduce from 'lodash/reduce';
 import shuffle from 'lodash/shuffle';
 import 'gsap';
 import Reel from '../groups/Reel';
-import { decodePlayer, dollarize } from '../utils';
 import { TILE_WIDTH, TILE_HEIGHT, SPACING } from '../constants';
 import ValueTweener from '../ValueTweener';
 import Pool from '../pool';
-import * as Font from '../Font';
-import * as Color from '../Color';
 
 const SPIN_DELAY = 0.2;
-const SALARY_CAP = 43000000; // salary is just higher than the highest possible salary
 const { TweenMax, TimelineMax, Linear, Strong, PIXI } = window;
 
 const Debug = {
@@ -26,11 +26,33 @@ const Debug = {
   },
 };
 
-// const Symbols = ['symbols', 'bball', 'football', 'baseball', 'cricket', 'soccer'];
-const Symbols = ['symbols', 'bball', 'football'];
+const NUM_ROWS = 3;
+const NUM_COLUMNS = 5;
 
-function getMockResults() {
-  return times(5, () => times(3, () => sample(Symbols)));
+const Symbols = ['playchip', 'bball', 'football', 'baseball', 'cricket', 'soccer'];
+// const Symbols = ['playchip', 'bball'];
+
+// const Lines = [[0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [2, 2, 2, 2, 2], [0, 1, 2, 1, 0], [2, 1, 0, 1, 2]];
+// const Lines = [[0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [2, 2, 2, 2, 2]];
+const Lines = [[0, 1, 2, 1, 0]];
+
+function getResults(isWin) {
+  const randomLines = times(NUM_COLUMNS, () =>
+    times(NUM_ROWS, () => sample(without(Symbols, 'playchip'))),
+  );
+  // const numPlaychips = isWin ? sample([3, 4, 5]) : 2;
+  const numPlaychips = 4;
+  const nulls = shuffle([
+    ...times(NUM_COLUMNS - numPlaychips, () => true),
+    ...times(numPlaychips, () => false),
+  ]);
+  const winningLine = sample(Lines).map((line, i) => (nulls[i] ? null : line));
+  randomLines.forEach((line, i) => {
+    if (winningLine[i] !== null) {
+      line[winningLine[i]] = 'playchip';
+    }
+  });
+  return randomLines;
 }
 
 export default class extends Phaser.State {
@@ -99,31 +121,25 @@ export default class extends Phaser.State {
     reelGrp.addChild(rect);
     reelGrp.mask = rect;
 
-    this.bottomBar = this.addBottomBar();
-
-    const padding = 80;
-    const availableSpace = this.world.height - this.bottomBar.height - padding;
-    const defaultSpace = TILE_HEIGHT * 3 + 20;
-
-    this.fullReelGrp.scale.y = this.fullReelGrp.scale.x = availableSpace / defaultSpace;
-    const offsetX = backing.width * this.fullReelGrp.scale.x / 2;
-    const offsetY = backing.height * this.fullReelGrp.scale.y / 2;
-    this.fullReelGrp.pivot.set(backing.width / 2, backing.height / 2);
-    this.fullReelGrp.position.set(
-      (this.world.width - backing.width * this.fullReelGrp.scale.x) / 2 + offsetX,
-      10 + offsetY,
+    this.spinBtn = this.addButton(
+      this.world,
+      this.world.width - 300,
+      this.world.height - 150,
+      'spin',
+      this.spin,
     );
+
+    this.fullReelGrp.position.set((this.world.width - backing.width) / 2, 30);
   }
 
   spin() {
     this.spinBtn.disable();
-    this.enterChallengeBtn.disable();
     this.game.add.sound('click').play();
     this.spinSnd = this.game.add.sound('spin', 1, true);
     this.spinSnd.play();
 
     // TODO request results from the backend
-    const results = getMockResults();
+    const results = getResults(Math.random() > 0.5);
 
     const tl = new TimelineMax();
     this.reels.forEach((reel, i) => tl.call(reel.spin, [], reel, i * SPIN_DELAY));
@@ -131,23 +147,53 @@ export default class extends Phaser.State {
   }
 
   stop(results) {
-    this.lineup = reduce(results, (memo, arr) => [...memo, arr[1]], []);
+    console.log('stop', results);
     const promises = this.reels.map(
       (reel, i) =>
         new Promise(resolve =>
           TweenMax.delayedCall(i * SPIN_DELAY, () => {
-            reel.requestStop(results[i], () => resolve());
+            reel.requestStop(results[i], () => {
+              this.analyzeResults(results, i);
+              resolve();
+            });
           }),
         ),
     );
     Promise.all(promises).then(() => this.handleSpinsComplete());
   }
 
+  analyzeResults(results, currentColumn) {
+    // const activePlaychips = map the results to only display active playchips
+    const lines = this.scanLines(take(results, currentColumn + 1), currentColumn);
+    if (lines.length > 0) {
+      if (results[currentColumn].includes('playchip')) {
+        this.game.add.audio('select').play();
+      }
+    } else {
+      this.game.add.audio('stick').play();
+    }
+    lines.forEach((line) => {
+      take(this.reels, currentColumn + 1).forEach((reel, column) => {
+        times(NUM_ROWS, (row) => {
+          if (line[column]) {
+            reel.getCard(row).playCurrentAnimation();
+          }
+        });
+      });
+    });
+  }
+
+  scanLines(results, i) {
+    if (i === 0) return [];
+    const mappedLines = Lines.map(line =>
+      line.map((column, j) => (results[j] && results[j][column]) === 'playchip'),
+    );
+    return mappedLines;
+  }
+
   handleSpinsComplete() {
     this.spinSnd.stop();
-    this.renderSalaryBar();
     this.spinBtn.enable();
-    this.enterChallengeBtn.enable();
   }
 
   /* -------------------------------------------------------
@@ -183,118 +229,6 @@ export default class extends Phaser.State {
     const g = this.game.add.graphics(0, 0, parent);
     g.beginFill(0xfed700).drawRect(0, 0, w, h);
     return g;
-  }
-
-  addBottomBar() {
-    const grp = this.game.add.group(this.world);
-    const halfBar = this.game.make.image(0, 0, 'assets', 'half_bottom_bar');
-
-    const middleGrp = this.game.add.group(grp);
-    middleGrp.position.set(halfBar.width - 16, 4);
-    const middle = this.game.add.sprite(0, 0, 'assets', 'blue_middle', middleGrp);
-    middle.height = 85;
-    this.addPayout(middleGrp, middleGrp.width / 2, 10);
-
-    // light sweep
-    const lightSweep = this.game.add.image(-200, 0, 'assets', 'light_sweep', middleGrp);
-    lightSweep.alpha = 0.8;
-    lightSweep.height = 85;
-    lightSweep.height = middle.height;
-    lightSweep.blendMode = PIXI.blendModes.ADD;
-    TweenMax.to(lightSweep, 2, { x: 400, repeat: -1, ease: Linear.easeNone, repeatDelay: 5 });
-
-    grp.addChild(halfBar);
-    const halfBar2 = this.game.add.image(
-      middleGrp.x + middle.width - 16,
-      0,
-      'assets',
-      'half_bottom_bar',
-      grp,
-    );
-    halfBar2.anchor.x = 1;
-    halfBar2.scale.x = -1;
-    grp.position.set((this.world.width - grp.width) / 2, this.world.height - 110);
-
-    this.addSalaryBar(grp, 15, 13);
-    this.spinBtn = this.addButton(grp, grp.width - 190, 6, 'spin', this.spin);
-    this.autoSparkle(this.spinBtn);
-    this.enterChallengeBtn = this.addButton(
-      grp,
-      grp.width - 380,
-      6,
-      'enter_challenge',
-      this.enterChallengeClicked,
-    );
-    this.enterChallengeBtn.disable();
-    return grp;
-  }
-
-  addSalaryBar(parent, x, y) {
-    const grp = this.game.add.group(parent);
-    grp.position.set(x, y);
-    this.game.add.image(0, 0, 'assets', 'salary_back', grp);
-    const titleTxt = this.game.add.bitmapText(20, 16, 'pantoon_white', 'SALARY CAP', 14, grp);
-    titleTxt.alpha = 0.9;
-    titleTxt.anchor.y = 0.5;
-    const salaryTxt = this.game.add.bitmapText(
-      340,
-      15,
-      'pantoon_white',
-      dollarize(SALARY_CAP),
-      18,
-      grp,
-    );
-    salaryTxt.anchor.set(1, 0.5);
-
-    // bar
-    const g = this.game.add.graphics(13, 34, grp);
-    const w = 340;
-    const h = 26;
-    g.beginFill(0x65db3b);
-    g.drawRect(0, 0, w, h);
-    g.scale.x = 0;
-
-    // txt
-    const txt = this.game.add.bitmapText(100, 34, 'pantoon_white', '', 18, grp);
-    txt.anchor.x = 1;
-
-    this.salaryBar = {
-      bar: g,
-      txt,
-    };
-  }
-
-  renderSalaryBar() {
-    const salaryCap = SALARY_CAP;
-    const salary = this.lineup.reduce((memo, player) => memo + player.salary, 0);
-    const percentageUsed = salary / salaryCap;
-    this.valueTweener.tweenTo(
-      1.5,
-      percentageUsed,
-      (value) => {
-        this.salaryBar.bar.scale.x = value;
-        this.salaryBar.txt.text = `${parseInt(value * 100, 10)}%`;
-        this.salaryBar.txt.x = 4 + this.salaryBar.bar.width;
-      },
-      this,
-    );
-  }
-
-  addPayout(parent, x, y) {
-    this.payout = 1000;
-    const style = { font: 'pantoon_white', size: 30 };
-    this.payoutTxt = this.game.add.bitmapText(x, y, style.font, this.payout, style.size, parent);
-    this.payoutTxt.anchor.set(0.5, 0);
-    this.payoutTimer.add((value) => {
-      this.payoutTxt.text = dollarize(value);
-    });
-    this.setPayoutAndRestartTimer();
-  }
-
-  setPayoutAndRestartTimer() {
-    this.payout += 1;
-    this.payoutTimer.dispatch(this.payout);
-    TweenMax.delayedCall(random(0.2, 3), this.setPayoutAndRestartTimer, [], this);
   }
 
   addButton(parent, x, y, key, callback) {

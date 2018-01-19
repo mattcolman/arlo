@@ -1,5 +1,4 @@
 import ManifestLoader from 'phaser-manifest-loader';
-import PlayersJson from '../../lib/players.json';
 import Main from './Main';
 import '../../assets/fonts/panton/stylesheet.css';
 
@@ -8,7 +7,7 @@ const { Phaser } = window;
 const req = require.context('../../assets', true, /.*\.png|json|ttf|woff|woff2|xml|mp3|jpg|jpeg$/);
 
 const MANIFEST = {
-  audio: ['click', 'spin', 'select', 'success'],
+  audio: ['click', 'spin', 'select', 'success', 'stick'],
   spritesheets: ['symbols', 'assets'],
   images: ['background', 'star_particle', 'blue_particle'],
   bitmap_fonts: ['pantoon_white', 'pantoon_yellow', 'phosphate'],
@@ -21,7 +20,6 @@ const MANIFEST = {
 
 export default class extends Phaser.State {
   create() {
-    this.game.load.json('players_json', PlayersJson);
     const loader = this.game.plugins.add(ManifestLoader, req);
     loader.loadManifest(MANIFEST).then(() => {
       console.log('loaded!');

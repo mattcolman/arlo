@@ -18,10 +18,6 @@ module.exports = {
     new CopyWebpackPlugin(
       [
         {
-          from: 'lib',
-          to: 'lib',
-        },
-        {
           from: 'static',
           to: path.resolve(__dirname, 'public'),
         },

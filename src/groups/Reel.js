@@ -1,4 +1,3 @@
-// import { times, shuffle } from 'lodash';
 import times from 'lodash/times';
 import shuffle from 'lodash/shuffle';
 import sample from 'lodash/sample';
@@ -58,8 +57,11 @@ export default class Reel extends Phaser.Group {
   }
 
   setLine(results, part = 1) {
-    console.log('setLine', results);
     this.part[part].cards.map((card, i) => card.setSymbol(results[i]));
+  }
+
+  getCard(i) {
+    return this.part[1].cards[i];
   }
 
   /* -------------------------------------------------------
@@ -67,7 +69,7 @@ export default class Reel extends Phaser.Group {
     ------------------------------------------------------- */
 
   stop(results) {
-    console.log('stop', results);
+    // console.log('stop', results);
     // oddly, you actually have to pause before you kill
     // to ensure there's not another tick after this.
     this.spinner.pause().kill();
@@ -151,31 +153,30 @@ export default class Reel extends Phaser.Group {
 
   makeCard(parent) {
     const grp = this.game.add.group(parent);
-    // const width = TILE_WIDTH;
-    // const height = TILE_HEIGHT;
-
-    // temp is to make sure blur filter works...bug
-    // const temp = this.game.add.image(0, 0, 'star_particle', null, grp);
-    // temp.alpha = 0.1;
-    const symbol = this.game.add.sprite(0, 0, 'symbols', null, grp);
-    const anim = symbol.animations.add(
-      'symbols',
-      Phaser.Animation.generateFrameNames('symbols', 1, 64, '', 4),
+    const sprite = this.game.add.sprite(0, 0, 'symbols', null, grp);
+    sprite.animations.add(
+      'playchip',
+      Phaser.Animation.generateFrameNames('playchip', 1, 64, '', 4),
       30,
       true,
     );
-    symbol.width = TILE_WIDTH;
-    symbol.height = TILE_HEIGHT;
+    sprite.width = TILE_WIDTH;
+    sprite.height = TILE_HEIGHT;
     grp.setSymbol = (symbolName) => {
       grp.name = symbolName;
-      if (symbolName === 'symbols') {
-        symbol.animations.play('symbols');
+      if (symbolName === 'playchip') {
+        // symbol.animations.stop('symbols', true);
+        sprite.frameName = 'playchip0001';
       } else {
-        symbol.animations.stop();
-        symbol.frameName = symbolName;
+        sprite.animations.stop();
+        sprite.frameName = symbolName;
       }
     };
-
+    grp.playCurrentAnimation = () => {
+      if (!sprite.animations.currentAnim.isPlaying) {
+        sprite.animations.currentAnim.play();
+      }
+    };
     return grp;
   }
 }

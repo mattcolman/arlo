@@ -12,8 +12,8 @@ function createMainGame(parent, props = {}) {
     ...props,
   };
 
-  const WORLD_WIDTH = initialProps.isDesktop ? 950 : 714;
-  const WORLD_HEIGHT = initialProps.isDesktop ? 550 : 550;
+  const WORLD_WIDTH = initialProps.isDesktop ? 1366 : 1366;
+  const WORLD_HEIGHT = initialProps.isDesktop ? 768 : 768;
 
   const config = {
     transparent: true,
