@@ -7,7 +7,18 @@ const { Phaser } = window;
 const req = require.context('../../assets', true, /.*\.png|json|ttf|woff|woff2|xml|mp3|jpg|jpeg$/);
 
 const MANIFEST = {
-  audio: ['click', 'spin', 'select', 'success', 'stick'],
+  audio: [
+    'click',
+    'spin',
+    'select1',
+    'select2',
+    'select3',
+    'select4',
+    'select5',
+    'success',
+    'stick',
+    'reaction',
+  ],
   spritesheets: ['symbols', 'assets'],
   images: ['background', 'star_particle', 'blue_particle'],
   bitmap_fonts: ['pantoon_white', 'pantoon_yellow', 'phosphate'],

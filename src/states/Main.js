@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import sample from 'lodash/sample';
+import first from 'lodash/first';
 import get from 'lodash/get';
 import take from 'lodash/take';
 import times from 'lodash/times';
@@ -32,21 +33,37 @@ const NUM_COLUMNS = 5;
 const Symbols = ['playchip', 'bball', 'football', 'baseball', 'cricket', 'soccer'];
 // const Symbols = ['playchip', 'bball'];
 
-// const Lines = [[0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [2, 2, 2, 2, 2], [0, 1, 2, 1, 0], [2, 1, 0, 1, 2]];
+const Lines = [[0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [2, 2, 2, 2, 2], [0, 1, 2, 1, 0], [2, 1, 0, 1, 2]];
 // const Lines = [[0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [2, 2, 2, 2, 2]];
-const Lines = [[0, 1, 2, 1, 0]];
+// const Lines = [[0, 1, 2, 1, 0]];
 
-function getResults(isWin) {
-  const randomLines = times(NUM_COLUMNS, () =>
-    times(NUM_ROWS, () => sample(without(Symbols, 'playchip'))),
+function numMatchesInLine(line, results) {
+  let i = 0;
+  const count = line.reduce(
+    (memo, l) =>
+      // debugger;
+      memo + (results[i++][l] === 'playchip' ? 1 : 0),
+    0,
   );
-  // const numPlaychips = isWin ? sample([3, 4, 5]) : 2;
-  const numPlaychips = 4;
+  return count;
+}
+
+function pickWinningLine() {
+  return random(0, Lines.length - 1);
+}
+
+function getWinningLine(lineIndex, numPlaychips) {
   const nulls = shuffle([
     ...times(NUM_COLUMNS - numPlaychips, () => true),
     ...times(numPlaychips, () => false),
   ]);
-  const winningLine = sample(Lines).map((line, i) => (nulls[i] ? null : line));
+  return Lines[lineIndex].map((line, i) => (nulls[i] ? null : line));
+}
+
+function getResults(winningLine) {
+  const randomLines = times(NUM_COLUMNS, () =>
+    times(NUM_ROWS, () => sample(without(Symbols, 'playchip'))),
+  );
   randomLines.forEach((line, i) => {
     if (winningLine[i] !== null) {
       line[winningLine[i]] = 'playchip';
@@ -68,6 +85,39 @@ export default class extends Phaser.State {
     this.addBackground();
 
     this.addSlots();
+
+    this.spinBtn = this.addSpinButton();
+    this.spinBtn.disable();
+
+    const slotSounds = [
+      'select1',
+      'select2',
+      'select3',
+      'select4',
+      'select5',
+      'success',
+      'reaction',
+      'click',
+      'stick',
+    ];
+    this.slotSoundsHash = slotSounds.reduce(
+      (memo, id) => ({
+        ...memo,
+        [id]: this.game.sound.add(id),
+      }),
+      {},
+    );
+
+    //  Being mp3 files these take time to decode, so we can't play them instantly
+    //  Using setDecodedCallback we can be notified when they're ALL ready for use.
+    //  The audio files could decode in ANY order, we can never be sure which it'll be.
+    this.game.sound.setDecodedCallback(
+      Object.values(this.slotSoundsHash),
+      () => {
+        this.spinBtn.enable();
+      },
+      this,
+    );
 
     if (Debug.config.fps) {
       this.game.time.advancedTiming = true;
@@ -121,39 +171,54 @@ export default class extends Phaser.State {
     reelGrp.addChild(rect);
     reelGrp.mask = rect;
 
-    this.spinBtn = this.addButton(
+    this.fullReelGrp.position.set((this.world.width - backing.width) / 2, 30);
+  }
+
+  addSpinButton() {
+    return this.addButton(
       this.world,
       this.world.width - 300,
       this.world.height - 150,
       'spin',
       this.spin,
     );
-
-    this.fullReelGrp.position.set((this.world.width - backing.width) / 2, 30);
   }
 
   spin() {
     this.spinBtn.disable();
-    this.game.add.sound('click').play();
+    this.slotSoundsHash.click.play();
     this.spinSnd = this.game.add.sound('spin', 1, true);
     this.spinSnd.play();
 
     // TODO request results from the backend
-    const results = getResults(Math.random() > 0.5);
-
+    const isWin = Math.random() < 0.5;
+    const numPlaychips = isWin ? sample([3, 4, 5]) : 2;
+    const winningLineIndex = pickWinningLine();
+    const winningLine = getWinningLine(winningLineIndex, numPlaychips);
+    const results = getResults(winningLine);
     const tl = new TimelineMax();
     this.reels.forEach((reel, i) => tl.call(reel.spin, [], reel, i * SPIN_DELAY));
-    tl.call(this.stop, [results], this, 2);
+    tl.call(this.stop, [results, winningLine], this, 2);
   }
 
-  stop(results) {
+  stop(results, winningLine) {
     console.log('stop', results);
+    const delays = [];
+    let runningSpinDelay = 0;
+    let count = 0;
+    winningLine.forEach((cell) => {
+      const anticipation = count >= 2;
+      count += cell !== null ? 1 : 0;
+      runningSpinDelay += SPIN_DELAY + (anticipation ? 3 : 0);
+      delays.push(runningSpinDelay);
+    });
+
     const promises = this.reels.map(
       (reel, i) =>
         new Promise(resolve =>
-          TweenMax.delayedCall(i * SPIN_DELAY, () => {
+          TweenMax.delayedCall(delays[i], () => {
             reel.requestStop(results[i], () => {
-              this.analyzeResults(results, i);
+              this.analyzeResults(results, winningLine, i);
               resolve();
             });
           }),
@@ -162,7 +227,27 @@ export default class extends Phaser.State {
     Promise.all(promises).then(() => this.handleSpinsComplete());
   }
 
-  analyzeResults(results, currentColumn) {
+  analyzeResults(results, winningLine, currentColumn) {
+    const winningCount = take(winningLine, currentColumn + 1).reduce(
+      (memo, value) => memo + (value === null ? 0 : 1),
+      0,
+    );
+    if (winningLine[currentColumn]) {
+      if (currentColumn === NUM_COLUMNS - 1) {
+        if (winningCount >= 3) {
+          this.slotSoundsHash[`select${winningCount}`].play();
+          TweenMax.delayedCall(0.2, () => {
+            this.slotSoundsHash.success.play();
+          });
+        } else {
+          this.slotSoundsHash.reaction.play();
+        }
+      } else {
+        this.slotSoundsHash[`select${winningCount}`].play();
+      }
+    } else {
+      this.slotSoundsHash.stick.play();
+    }
     // const activePlaychips = map the results to only display active playchips
     // if (lines.length > 0) {
     //   if (results[currentColumn].includes('playchip')) {
@@ -172,15 +257,10 @@ export default class extends Phaser.State {
     //   this.game.add.audio('stick').play();
     // }
     console.log('analyzeResults!!');
-    const TheLine = [0, 1, 2, 1, 0];
-    for (let column = 0; column < currentColumn + 1; column++) {
-      const result = results[column];
-      const reel = this.reels[column];
-      const row = TheLine[column];
-      if (result[row] === 'playchip') {
-        reel.getCard(row).playCurrentAnimation();
-      }
-    }
+
+    take(winningLine, currentColumn + 1).forEach((row, i) => {
+      if (row !== null) this.reels[i].getCard(row).playCurrentAnimation();
+    });
   }
 
   scanLines(results, i) {
