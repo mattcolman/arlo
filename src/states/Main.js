@@ -232,22 +232,22 @@ export default class extends Phaser.State {
       (memo, value) => memo + (value === null ? 0 : 1),
       0,
     );
-    if (winningLine[currentColumn]) {
-      if (currentColumn === NUM_COLUMNS - 1) {
-        if (winningCount >= 3) {
-          this.slotSoundsHash[`select${winningCount}`].play();
-          TweenMax.delayedCall(0.2, () => {
-            this.slotSoundsHash.success.play();
-          });
-        } else {
-          this.slotSoundsHash.reaction.play();
-        }
-      } else {
-        this.slotSoundsHash[`select${winningCount}`].play();
-      }
+    if (winningLine[currentColumn] !== null) {
+      this.slotSoundsHash[`select${winningCount}`].play();
     } else {
       this.slotSoundsHash.stick.play();
     }
+
+    if (currentColumn === NUM_COLUMNS - 1) {
+      if (winningCount >= 3) {
+        TweenMax.delayedCall(0.2, () => {
+          this.slotSoundsHash.success.play();
+        });
+      } else {
+        this.slotSoundsHash.reaction.play();
+      }
+    }
+
     // const activePlaychips = map the results to only display active playchips
     // if (lines.length > 0) {
     //   if (results[currentColumn].includes('playchip')) {
