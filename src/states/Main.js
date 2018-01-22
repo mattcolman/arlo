@@ -164,23 +164,23 @@ export default class extends Phaser.State {
 
   analyzeResults(results, currentColumn) {
     // const activePlaychips = map the results to only display active playchips
-    const lines = this.scanLines(take(results, currentColumn + 1), currentColumn);
-    if (lines.length > 0) {
-      if (results[currentColumn].includes('playchip')) {
-        this.game.add.audio('select').play();
+    // if (lines.length > 0) {
+    //   if (results[currentColumn].includes('playchip')) {
+    //     this.game.add.audio('select').play();
+    //   }
+    // } else {
+    //   this.game.add.audio('stick').play();
+    // }
+    console.log('analyzeResults!!');
+    const TheLine = [0, 1, 2, 1, 0];
+    for (let column = 0; column < currentColumn + 1; column++) {
+      const result = results[column];
+      const reel = this.reels[column];
+      const row = TheLine[column];
+      if (result[row] === 'playchip') {
+        reel.getCard(row).playCurrentAnimation();
       }
-    } else {
-      this.game.add.audio('stick').play();
     }
-    lines.forEach((line) => {
-      take(this.reels, currentColumn + 1).forEach((reel, column) => {
-        times(NUM_ROWS, (row) => {
-          if (line[column]) {
-            reel.getCard(row).playCurrentAnimation();
-          }
-        });
-      });
-    });
   }
 
   scanLines(results, i) {
