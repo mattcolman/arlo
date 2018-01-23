@@ -242,6 +242,7 @@ export default class extends Phaser.State {
       if (winningCount >= 3) {
         TweenMax.delayedCall(0.2, () => {
           this.slotSoundsHash.success.play();
+          this.explodeParticles();
         });
       } else {
         this.slotSoundsHash.reaction.play();
@@ -274,6 +275,30 @@ export default class extends Phaser.State {
   handleSpinsComplete() {
     this.spinSnd.stop();
     this.spinBtn.enable();
+  }
+
+  explodeParticles() {
+    const emitter = this.game.add.emitter(this.game.world.centerX, 200, 200);
+    emitter.width = 200;
+    emitter.height = 200;
+    emitter.minParticleScale = 0.2;
+    emitter.makeParticles('particle');
+    emitter.setAlpha(0, 1, 500);
+    emitter.forEach((p) => {
+      const anim = p.animations.add(
+        'particle',
+        Phaser.Animation.generateFrameNames('particle', 1, 33, '', 4),
+        30,
+        true,
+      );
+      p.rotation = random(0, Phaser.Math.PI2);
+      anim.play();
+      anim.frame = random(0, 32);
+    });
+
+    //	false means don't explode all the sprites at once, but instead release at a rate of 20 particles per frame
+    //	The 5000 value is the lifespan of each particle
+    emitter.start(false, 5000, 20);
   }
 
   /* -------------------------------------------------------

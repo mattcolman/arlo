@@ -19,7 +19,7 @@ const MANIFEST = {
     'stick',
     'reaction',
   ],
-  spritesheets: ['symbols', 'assets'],
+  spritesheets: ['symbols', 'assets', 'particle'],
   images: ['background', 'star_particle', 'blue_particle'],
   bitmap_fonts: ['pantoon_white', 'pantoon_yellow', 'phosphate'],
   fonts: {
