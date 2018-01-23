@@ -148,7 +148,7 @@ export default class extends Phaser.State {
 
     const NUM_REELS = 5;
     const w = (TILE_WIDTH + SPACING) * NUM_REELS;
-    const h = (TILE_HEIGHT + SPACING) * 3 - SPACING;
+    const h = TILE_HEIGHT * NUM_ROWS;
 
     const REEL_Y = 44;
 
@@ -246,16 +246,6 @@ export default class extends Phaser.State {
       }
     }
 
-    // const activePlaychips = map the results to only display active playchips
-    // if (lines.length > 0) {
-    //   if (results[currentColumn].includes('playchip')) {
-    //     this.game.add.audio('select').play();
-    //   }
-    // } else {
-    //   this.game.add.audio('stick').play();
-    // }
-    console.log('analyzeResults!!');
-
     take(winningLine, currentColumn + 1).forEach((row, i) => {
       if (row !== null) this.reels[i].getCard(row).playCurrentAnimation();
     });
@@ -320,29 +310,29 @@ export default class extends Phaser.State {
     });
   }
 
-  explodeParticles() {
-    const emitter = this.game.add.emitter(this.game.world.centerX, 200, 200);
-    emitter.width = 200;
-    emitter.height = 200;
-    emitter.minParticleScale = 0.2;
-    emitter.makeParticles('particle');
-    emitter.setAlpha(0, 1, 500);
-    emitter.forEach((p) => {
-      const anim = p.animations.add(
-        'particle',
-        Phaser.Animation.generateFrameNames('particle', 1, 33, '', 4),
-        30,
-        true,
-      );
-      p.rotation = random(0, Phaser.Math.PI2);
-      anim.play();
-      anim.frame = random(0, 32);
-    });
-
-    //	false means don't explode all the sprites at once, but instead release at a rate of 20 particles per frame
-    //	The 5000 value is the lifespan of each particle
-    emitter.start(false, 5000, 20);
-  }
+  // explodeParticles() {
+  //   const emitter = this.game.add.emitter(this.game.world.centerX, 200, 200);
+  //   emitter.width = 200;
+  //   emitter.height = 200;
+  //   emitter.minParticleScale = 0.2;
+  //   emitter.makeParticles('particle');
+  //   emitter.setAlpha(0, 1, 500);
+  //   emitter.forEach((p) => {
+  //     const anim = p.animations.add(
+  //       'particle',
+  //       Phaser.Animation.generateFrameNames('particle', 1, 33, '', 4),
+  //       30,
+  //       true,
+  //     );
+  //     p.rotation = random(0, Phaser.Math.PI2);
+  //     anim.play();
+  //     anim.frame = random(0, 32);
+  //   });
+  //
+  //   //	false means don't explode all the sprites at once, but instead release at a rate of 20 particles per frame
+  //   //	The 5000 value is the lifespan of each particle
+  //   emitter.start(false, 5000, 20);
+  // }
 
   /* -------------------------------------------------------
     -- PRIVATE

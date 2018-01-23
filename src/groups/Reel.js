@@ -74,6 +74,7 @@ export default class Reel extends Phaser.Group {
     // to ensure there's not another tick after this.
     this.spinner.pause().kill();
 
+    this.setLine(this.part[1].cards.map(card => card.name), 0);
     this.setLine(results);
 
     const tl = new TimelineMax({
