@@ -156,7 +156,7 @@ export default class Reel extends Phaser.Group {
     const sprite = this.game.add.sprite(0, 0, 'symbols', null, grp);
     sprite.animations.add(
       'playchip',
-      Phaser.Animation.generateFrameNames('playchip', 1, 64, '', 4),
+      Phaser.Animation.generateFrameNames('playchip', 1, 74, '', 4),
       30,
       true,
     );
