@@ -42,7 +42,11 @@ export default class extends Phaser.State {
 
   setupStage() {
     this.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
-    if (!window.isMobile) this.scale.setResizeCallback(this.scaleGame);
+    if (window.isMobile) {
+      this.scale.forceLandscape = true;
+    } else {
+      this.scale.setResizeCallback(this.scaleGame);
+    }
     this.input.maxPointers = 1;
     this.scaleGame();
   }

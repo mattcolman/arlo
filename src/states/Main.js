@@ -32,17 +32,8 @@ const NUM_ROWS = 3;
 const NUM_COLUMNS = 5;
 
 const Symbols = ['playchip', 'bball', 'football', 'baseball', 'cricket', 'soccer'];
-// const Symbols = ['playchip', 'bball'];
 
 const Lines = [[0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [2, 2, 2, 2, 2], [0, 1, 2, 1, 0], [2, 1, 0, 1, 2]];
-// const Lines = [[0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [2, 2, 2, 2, 2]];
-// const Lines = [[0, 1, 2, 1, 0]];
-
-function numMatchesInLine(line, results) {
-  let i = 0;
-  const count = line.reduce((memo, l) => memo + (results[i++][l] === 'playchip' ? 1 : 0), 0);
-  return count;
-}
 
 function pickWinningLine() {
   return random(0, Lines.length - 1);
@@ -114,6 +105,16 @@ export default class extends Phaser.State {
       },
       this,
     );
+
+    this.game.scale.enterIncorrectOrientation.add(() => {
+      console.log('incorrect orientation');
+      this.game.stage.visible = false;
+    });
+
+    this.game.scale.leaveIncorrectOrientation.add(() => {
+      console.log('correct orientation');
+      this.game.stage.visible = true;
+    });
 
     if (Debug.config.fps) {
       this.game.time.advancedTiming = true;
