@@ -188,9 +188,9 @@ export default class extends Phaser.State {
     this.spinSnd.play();
 
     // TODO request results from the backend
-    // const isWin = Math.random() < 0.5;
-    const isWin = true;
-    const numPlaychips = isWin ? sample([3, 4, 5]) : 2;
+    const isWin = Math.random() < 0.5;
+    // const isWin = true;
+    const numPlaychips = isWin ? 5 : random(2, 4);
     const winningLineIndex = pickWinningLine();
     const winningLine = getWinningLine(winningLineIndex, numPlaychips);
     const results = getResults(winningLine);
