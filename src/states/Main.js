@@ -19,7 +19,6 @@ import { TILE_WIDTH, TILE_HEIGHT, SPACING } from '../constants';
 import ValueTweener from '../ValueTweener';
 import Pool from '../pool';
 
-const SPIN_DELAY = 0.2;
 const { TweenMax, TimelineMax, Linear, Strong, PIXI } = window;
 
 const Debug = {
@@ -31,6 +30,11 @@ const Debug = {
 const NUM_ROWS = 3;
 const NUM_COLUMNS = 5;
 
+const SPIN_DELAY = 0.2;
+const STOP_DELAY = 0.4;
+const SPIN_DURATION = 1.2;
+const ANTICIPATION_DELAY = 2;
+
 const Symbols = ['playchip', 'bball', 'football', 'baseball', 'cricket', 'soccer'];
 
 const Lines = [[0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [2, 2, 2, 2, 2], [0, 1, 2, 1, 0], [2, 1, 0, 1, 2]];
@@ -40,10 +44,10 @@ function pickWinningLine() {
 }
 
 function getWinningLine(lineIndex, numPlaychips) {
-  const nulls = shuffle([
-    ...times(NUM_COLUMNS - numPlaychips, () => true),
+  const nulls = [
     ...times(numPlaychips, () => false),
-  ]);
+    ...times(NUM_COLUMNS - numPlaychips, () => true),
+  ];
   return Lines[lineIndex].map((line, i) => (nulls[i] ? null : line));
 }
 
@@ -65,9 +69,18 @@ export default class extends Phaser.State {
     this.pool = new Pool();
     this.payoutTimer = new Phaser.Signal();
 
+    this.game.scale.enterIncorrectOrientation.add(() => {
+      console.log('incorrect orientation');
+      this.game.stage.visible = false;
+    });
+
     this.game.scale.leaveIncorrectOrientation.add(() => {
       window.location.reload();
     });
+
+    this.winSpin = random(1, 4);
+    console.log('winSpin is', this.winSpin);
+    this.spinNum = 0;
 
     this.addBackground();
 
@@ -105,16 +118,6 @@ export default class extends Phaser.State {
       },
       this,
     );
-
-    this.game.scale.enterIncorrectOrientation.add(() => {
-      console.log('incorrect orientation');
-      this.game.stage.visible = false;
-    });
-
-    this.game.scale.leaveIncorrectOrientation.add(() => {
-      console.log('correct orientation');
-      this.game.stage.visible = true;
-    });
 
     if (Debug.config.fps) {
       this.game.time.advancedTiming = true;
@@ -187,16 +190,15 @@ export default class extends Phaser.State {
     this.spinSnd = this.game.add.sound('spin', 1, true);
     this.spinSnd.play();
 
-    // TODO request results from the backend
-    const isWin = Math.random() < 0.5;
-    // const isWin = true;
+    const isWin = this.spinNum === this.winSpin;
     const numPlaychips = isWin ? 5 : random(2, 4);
     const winningLineIndex = pickWinningLine();
     const winningLine = getWinningLine(winningLineIndex, numPlaychips);
     const results = getResults(winningLine);
+    this.spinNum += 1;
     const tl = new TimelineMax();
     this.reels.forEach((reel, i) => tl.call(reel.spin, [], reel, i * SPIN_DELAY));
-    tl.call(this.stop, [results, winningLine], this, 2);
+    tl.call(this.stop, [results, winningLine], this, SPIN_DURATION);
   }
 
   stop(results, winningLine) {
@@ -205,9 +207,9 @@ export default class extends Phaser.State {
     let runningSpinDelay = 0;
     let count = 0;
     winningLine.forEach((cell) => {
-      const anticipation = count >= 2;
+      const anticipation = count === 4;
       count += cell !== null ? 1 : 0;
-      runningSpinDelay += SPIN_DELAY + (anticipation ? 3 : 0);
+      runningSpinDelay += STOP_DELAY + (anticipation ? ANTICIPATION_DELAY : 0);
       delays.push(runningSpinDelay);
     });
 
@@ -237,10 +239,10 @@ export default class extends Phaser.State {
     }
 
     if (currentColumn === NUM_COLUMNS - 1) {
-      if (winningCount >= 3) {
+      if (winningCount === 5) {
         TweenMax.delayedCall(0.2, () => {
           this.slotSoundsHash.success.play();
-          this.animateCoinParticles(winningLine);
+          this.handleGameComplete();
         });
       } else {
         this.slotSoundsHash.reaction.play();
@@ -263,6 +265,13 @@ export default class extends Phaser.State {
   handleSpinsComplete() {
     this.spinSnd.stop();
     this.spinBtn.enable();
+  }
+
+  handleGameComplete() {
+    this.explodeParticles();
+    TweenMax.delayedCall(3, () => {
+      this.game.onGameComplete.dispatch();
+    });
   }
 
   animateCoinParticles(winningLine) {
@@ -311,29 +320,29 @@ export default class extends Phaser.State {
     });
   }
 
-  // explodeParticles() {
-  //   const emitter = this.game.add.emitter(this.game.world.centerX, 200, 200);
-  //   emitter.width = 200;
-  //   emitter.height = 200;
-  //   emitter.minParticleScale = 0.2;
-  //   emitter.makeParticles('particle');
-  //   emitter.setAlpha(0, 1, 500);
-  //   emitter.forEach((p) => {
-  //     const anim = p.animations.add(
-  //       'particle',
-  //       Phaser.Animation.generateFrameNames('particle', 1, 33, '', 4),
-  //       30,
-  //       true,
-  //     );
-  //     p.rotation = random(0, Phaser.Math.PI2);
-  //     anim.play();
-  //     anim.frame = random(0, 32);
-  //   });
-  //
-  //   //	false means don't explode all the sprites at once, but instead release at a rate of 20 particles per frame
-  //   //	The 5000 value is the lifespan of each particle
-  //   emitter.start(false, 5000, 20);
-  // }
+  explodeParticles() {
+    const emitter = this.game.add.emitter(this.game.world.centerX, 200, 200);
+    emitter.width = 300;
+    emitter.height = 200;
+    emitter.minParticleScale = 0.2;
+    emitter.makeParticles('particle');
+    emitter.setAlpha(0, 1, 500);
+    emitter.forEach((p) => {
+      const anim = p.animations.add(
+        'particle',
+        Phaser.Animation.generateFrameNames('particle', 1, 33, '', 4),
+        30,
+        true,
+      );
+      p.rotation = random(0, Phaser.Math.PI2);
+      anim.play();
+      anim.frame = random(0, 32);
+    });
+
+    //	false means don't explode all the sprites at once, but instead release at a rate of 20 particles per frame
+    //	The 5000 value is the lifespan of each particle
+    emitter.start(false, 5000, 20);
+  }
 
   /* -------------------------------------------------------
     -- PRIVATE
