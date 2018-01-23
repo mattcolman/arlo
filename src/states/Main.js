@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import sample from 'lodash/sample';
+import compact from 'lodash/compact';
 import first from 'lodash/first';
 import get from 'lodash/get';
 import take from 'lodash/take';
@@ -39,12 +40,7 @@ const Lines = [[0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [2, 2, 2, 2, 2], [0, 1, 2, 1, 0
 
 function numMatchesInLine(line, results) {
   let i = 0;
-  const count = line.reduce(
-    (memo, l) =>
-      // debugger;
-      memo + (results[i++][l] === 'playchip' ? 1 : 0),
-    0,
-  );
+  const count = line.reduce((memo, l) => memo + (results[i++][l] === 'playchip' ? 1 : 0), 0);
   return count;
 }
 
@@ -191,7 +187,8 @@ export default class extends Phaser.State {
     this.spinSnd.play();
 
     // TODO request results from the backend
-    const isWin = Math.random() < 0.5;
+    // const isWin = Math.random() < 0.5;
+    const isWin = true;
     const numPlaychips = isWin ? sample([3, 4, 5]) : 2;
     const winningLineIndex = pickWinningLine();
     const winningLine = getWinningLine(winningLineIndex, numPlaychips);
@@ -242,7 +239,7 @@ export default class extends Phaser.State {
       if (winningCount >= 3) {
         TweenMax.delayedCall(0.2, () => {
           this.slotSoundsHash.success.play();
-          this.explodeParticles();
+          this.animateCoinParticles(winningLine);
         });
       } else {
         this.slotSoundsHash.reaction.play();
@@ -275,6 +272,52 @@ export default class extends Phaser.State {
   handleSpinsComplete() {
     this.spinSnd.stop();
     this.spinBtn.enable();
+  }
+
+  animateCoinParticles(winningLine) {
+    const winningSlots = compact(winningLine.map((cell, i) => this.reels[i].getCard(cell)));
+    winningSlots.forEach((slot) => {
+      const { x, y } = slot.worldPosition;
+      const targetX = this.world.width - 300;
+      const targetY = this.world.height - 150;
+      const halfX = x + (targetX - x) / 2;
+      const halfY = y + (targetY - y) / 2;
+      for (let i = 0; i < 10; i++) {
+        const coin = this.game.add.sprite(x + TILE_WIDTH / 2, y + TILE_HEIGHT / 2, 'particle');
+        const anim = coin.animations.add(
+          'particle',
+          Phaser.Animation.generateFrameNames('particle', 1, 33, '', 4),
+          30,
+          true,
+        );
+        anim.play();
+        anim.frame = random(0, 32);
+        coin.anchor.set(0.5);
+        coin.scale.set(random(0.5, 1));
+        coin.rotation = random(0, Phaser.Math.PI2);
+        coin.alpha = 0;
+        const tl = new TimelineMax({ delay: i * 0.1 + random(0, 0.1) });
+        tl
+          .to(coin, 0.1, { alpha: 1 })
+          .to(
+            coin,
+            2,
+          {
+            ease: Linear.easeNone,
+            bezier: {
+              values: [
+                  { x, y },
+                  { x: halfX + random(-100, 100), y: halfY + random(-100, 100) },
+                  { x: targetX, y: targetY },
+              ],
+              type: 'thru',
+            },
+          },
+            0,
+          )
+          .to(coin, 0.2, { alpha: 0 }, '-=0.2');
+      }
+    });
   }
 
   explodeParticles() {
