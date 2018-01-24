@@ -64,7 +64,7 @@ const CongratsBanner = glamorous.img({
   width: 'auto',
   height: 120,
   position: 'absolute',
-  top: -40,
+  top: -20,
   left: '50%',
   transform: 'translateX(-50%)',
 });
@@ -258,7 +258,7 @@ class EndScreen extends Component {
       <Modal>
         <Container>
           <CongratsBanner src={congratsImg} />
-          <Div paddingTop={20}>
+          <Div paddingTop={40}>
             <TextContainer>
               <Text>
                 <p>
