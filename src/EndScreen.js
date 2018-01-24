@@ -224,12 +224,25 @@ const SmallButton = glamorous.button({
   flex: 1,
 });
 
+const pulse = css.keyframes({
+  '0%': {
+    transform: 'scale(1)',
+  },
+  '50%': {
+    transform: 'scale(1.1)',
+  },
+  '100%': {
+    transform: 'scale(1)',
+  },
+});
+
 const DepositButton = glamorous.button({
   backgroundImage: `url(${depositSVG})`,
   backgroundColor: 'transparent',
   border: 'none',
   width: 185,
   height: 80,
+  animation: `${pulse} 2s infinite ease-in-out`,
 });
 
 class EndScreen extends Component {
