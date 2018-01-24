@@ -226,7 +226,9 @@ const SmallButton = glamorous.button({
 
 const DepositButton = glamorous.button({
   backgroundImage: `url(${depositSVG})`,
-  width: 190,
+  backgroundColor: 'transparent',
+  border: 'none',
+  width: 185,
   height: 80,
 });
 
@@ -243,77 +245,77 @@ class EndScreen extends Component {
       <Modal>
         <Container>
           <CongratsBanner src={congratsImg} />
-          <TextContainer>
-            <Text>
-              <span>
+          <Div paddingTop={20}>
+            <TextContainer>
+              <Text>
                 <p>
                   Spend a minimum of $100 and we'll credit you an extra <Bold>230% PlayChips!</Bold>
                 </p>
-              </span>
-            </Text>
-            <Text>
-              How much would you like to spend?
-              <form>
-                <InputContainer>
-                  <SmallButton
+              </Text>
+              <Text>
+                How much would you like to spend?
+                <form>
+                  <InputContainer>
+                    <SmallButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        this.setState({ depositAmount: 100 });
+                      }}
+                    >
+                      $100
+                    </SmallButton>
+                    <SmallButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        this.setState({ depositAmount: 500 });
+                      }}
+                    >
+                      $500
+                    </SmallButton>
+                    <SmallButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        this.setState({ depositAmount: 1000 });
+                      }}
+                    >
+                      $1,000
+                    </SmallButton>
+                  </InputContainer>
+                  <InputContainer>
+                    <Prefix>USD$</Prefix>
+                    <StyledInput
+                      type="number"
+                      value={depositAmount}
+                      onChange={(e) => {
+                        this.setState({ depositAmount: Math.max(100, e.target.value) });
+                      }}
+                    />
+                  </InputContainer>
+                  <TextContainer>
+                    You will receive
+                    <Well>
+                      <PlayChip />
+                      {numeral(depositAmount * 100).format('0,0')}
+                    </Well>
+                    PLUS a bonus
+                    <Well>
+                      <PlayChip />
+                      {numeral(depositAmount * 230).format('0,0')}
+                    </Well>
+                  </TextContainer>
+                  <DepositButton
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
-                      this.setState({ depositAmount: 100 });
-                    }}
-                  >
-                    $100
-                  </SmallButton>
-                  <SmallButton
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      this.setState({ depositAmount: 500 });
-                    }}
-                  >
-                    $500
-                  </SmallButton>
-                  <SmallButton
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      this.setState({ depositAmount: 1000 });
-                    }}
-                  >
-                    $1,000
-                  </SmallButton>
-                </InputContainer>
-                <InputContainer>
-                  <Prefix>USD$</Prefix>
-                  <StyledInput
-                    type="number"
-                    value={depositAmount}
-                    onChange={(e) => {
-                      this.setState({ depositAmount: Math.max(100, e.target.value) });
                     }}
                   />
-                </InputContainer>
-                <TextContainer>
-                  You will receive
-                  <Well>
-                    <PlayChip />
-                    {numeral(depositAmount * 100).format('0,0')}
-                  </Well>
-                  PLUS a bonus
-                  <Well>
-                    <PlayChip />
-                    {numeral(depositAmount * 230).format('0,0')}
-                  </Well>
-                </TextContainer>
-                <DepositButton
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                  }}
-                />
-              </form>
-            </Text>
-          </TextContainer>
+                </form>
+              </Text>
+            </TextContainer>
+          </Div>
           <Footer>
             <Logo src={logoImage} />
           </Footer>
