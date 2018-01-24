@@ -127,6 +127,8 @@ export default class extends Phaser.State {
       });
     }
 
+    // this.explodeParticles();
+
     super.create();
   }
 
@@ -198,10 +200,10 @@ export default class extends Phaser.State {
     this.spinNum += 1;
     const tl = new TimelineMax();
     this.reels.forEach((reel, i) => tl.call(reel.spin, [], reel, i * SPIN_DELAY));
-    tl.call(this.stop, [results, winningLine], this, SPIN_DURATION);
+    tl.call(this.stop, [results, winningLine, isWin], this, SPIN_DURATION);
   }
 
-  stop(results, winningLine) {
+  stop(results, winningLine, isWin) {
     console.log('stop', results);
     const delays = [];
     let runningSpinDelay = 0;
@@ -218,16 +220,16 @@ export default class extends Phaser.State {
         new Promise(resolve =>
           TweenMax.delayedCall(delays[i], () => {
             reel.requestStop(results[i], () => {
-              this.analyzeResults(results, winningLine, i);
+              this.analyzeResults(winningLine, i);
               resolve();
             });
           }),
         ),
     );
-    Promise.all(promises).then(() => this.handleSpinsComplete());
+    Promise.all(promises).then(() => this.handleSpinsComplete(isWin, winningLine));
   }
 
-  analyzeResults(results, winningLine, currentColumn) {
+  analyzeResults(winningLine, currentColumn) {
     const winningCount = take(winningLine, currentColumn + 1).reduce(
       (memo, value) => memo + (value === null ? 0 : 1),
       0,
@@ -254,22 +256,25 @@ export default class extends Phaser.State {
     });
   }
 
-  scanLines(results, i) {
-    if (i === 0) return [];
-    const mappedLines = Lines.map(line =>
-      line.map((column, j) => (results[j] && results[j][column]) === 'playchip'),
-    );
-    return mappedLines;
-  }
-
-  handleSpinsComplete() {
+  handleSpinsComplete(isWin, winningLine) {
     this.spinSnd.stop();
     this.spinBtn.enable();
+    if (!isWin) {
+      winningLine.forEach((playChipIndex, i) => {
+        if (playChipIndex === null) {
+          this.reels[i].greyOutNonPlayChips();
+        }
+      });
+    } else {
+      this.reels.forEach((reel, i) => {
+        reel.glow(i * 0.15);
+      });
+    }
   }
 
   handleGameComplete() {
     this.explodeParticles();
-    TweenMax.delayedCall(3, () => {
+    TweenMax.delayedCall(5, () => {
       this.game.onGameComplete.dispatch();
     });
   }
@@ -327,6 +332,8 @@ export default class extends Phaser.State {
     emitter.minParticleScale = 0.2;
     emitter.makeParticles('particle');
     emitter.setAlpha(0, 1, 500);
+    emitter.setXSpeed(-200, 200);
+    emitter.setYSpeed(-300, 300);
     emitter.forEach((p) => {
       const anim = p.animations.add(
         'particle',
@@ -341,7 +348,8 @@ export default class extends Phaser.State {
 
     //	false means don't explode all the sprites at once, but instead release at a rate of 20 particles per frame
     //	The 5000 value is the lifespan of each particle
-    emitter.start(false, 5000, 20);
+    emitter.start(true, 13000, 0, 200);
+    // emitter.start(false, 5000, 20);
   }
 
   /* -------------------------------------------------------

@@ -9,7 +9,7 @@ const defaultProps = {
 
 class Root extends Component {
   state = {
-    wonBonus: true,
+    wonBonus: false,
   };
   game;
 

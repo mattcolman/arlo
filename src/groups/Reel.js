@@ -29,6 +29,7 @@ export default class Reel extends Phaser.Group {
   }
 
   spin() {
+    this.results = null;
     TweenMax.killTweensOf(this.overlay);
     this.overlay.alpha = 1;
     this.overlay.visible = false;
@@ -80,13 +81,6 @@ export default class Reel extends Phaser.Group {
     const tl = new TimelineMax({
       onComplete: () => {
         this.filters = null;
-
-        // this.part[1].cards[0].filters = [this.grayFilter];
-        // this.part[1].cards[2].filters = [this.grayFilter];
-
-        // this.overlay.visible = true;
-        // TweenMax.to(this.overlay, 1, { alpha: 0, repeat: -1, yoyo: true });
-
         this.onComplete();
       },
     });
@@ -95,15 +89,29 @@ export default class Reel extends Phaser.Group {
       .to(this.blurY, 0.8, { blur: 0, ease: Back.easeOut.config(1) }, 0);
   }
 
-  glow() {
-    this.overlay.visible = true;
-    TweenMax.to(this.overlay, 1, { alpha: 0, repeat: -1, yoyo: true });
+  glow(delay) {
+    this.part[1].cards.forEach((card, i) => {
+      if (this.results[i] === 'playchip') {
+        this.overlay.y = -this.maxHeight + TILE_WIDTH * i;
+        this.overlay.visible = true;
+        TweenMax.to(this.overlay, 1, { alpha: 0, repeat: -1, yoyo: true, delay });
+      } else {
+        this.part[1].cards[i].filters = [this.grayFilter];
+      }
+    });
+  }
+
+  greyOutNonPlayChips() {
+    this.part[1].cards.forEach((card, i) => {
+      if (this.results[i] !== 'playchip') {
+        this.part[1].cards[i].filters = [this.grayFilter];
+      }
+    });
   }
 
   handleRepeat() {
     if (this.stopping) {
       this.stop(this.results);
-      this.results = null;
       this.stopping = false;
     } else {
       this.setLine(this.part[1].cards.map(card => card.name), 0);
@@ -178,6 +186,12 @@ export default class Reel extends Phaser.Group {
         sprite.animations.currentAnim.play();
       }
     };
+    grp.stopAnimation = () => {
+      if (sprite.animations.currentAnim.isPlaying) {
+        sprite.animations.currentAnim.stop();
+      }
+    };
+
     return grp;
   }
 }
