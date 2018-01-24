@@ -24,6 +24,7 @@
     "lodash": "^4.16.6",
     "moment": "^2.20.1",
     "moment-duration-format": "^2.2.0",
+    "numeral": "^2.0.6",
     "phaser": "^2.6.2",
     "phaser-manifest-loader": "^3.0.0",
     "prop-types": "^15.6.0",

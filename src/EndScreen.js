@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import glamorous, { Div } from 'glamorous';
+import numeral from 'numeral';
 import { css } from 'glamor';
 import congratsImg from '../assets/images/congrats.png';
 import '../assets/fonts/ubuntu/stylesheet.css';
 import logoImage from '../assets/images/logo-header.png';
+import playChipSVG from '../assets/images/icon-playchip.svg';
+import depositSVG from '../assets/images/deposit_button.svg';
 
 const modalEnter = css.keyframes({
   from: { opacity: 0, transform: 'scale(0.5)' },
@@ -28,6 +31,20 @@ const Modal = glamorous.div({
   alignItems: 'center',
 });
 
+const PlayChip = glamorous('img', {
+  withProps: {
+    src: playChipSVG,
+    alt: 'PlayChip',
+  },
+})({
+  display: 'inline-block',
+  height: '1.1em',
+  width: '1.1em',
+  marginTop: '-0.14em',
+  marginRight: '0.15em',
+  verticalAlign: 'middle',
+});
+
 const Container = glamorous.div({
   animation: `${modalEnter} 0.2s cubic-bezier(1,.01,.1,1.32)`,
   display: 'flex',
@@ -38,7 +55,7 @@ const Container = glamorous.div({
   maxWidth: 500,
   backgroundColor: '#144661',
   borderRadius: 8,
-  border: '10px solid #f5b84f',
+  // border: '10px solid #f5b84f',
   color: 'white',
   fontWeight: 500,
 });
@@ -47,7 +64,7 @@ const CongratsBanner = glamorous.img({
   width: 'auto',
   height: 120,
   position: 'absolute',
-  top: -55,
+  top: -40,
   left: '50%',
   transform: 'translateX(-50%)',
 });
@@ -195,7 +212,7 @@ const StyledInput = glamorous.input({
 });
 
 const Well = glamorous.div({
-  backgroundColor: '#999',
+  backgroundColor: '#196789',
   borderRadius: 8,
   padding: 10,
 });
@@ -205,6 +222,12 @@ const SmallButton = glamorous.button({
   backgroundColor: '#333',
   color: 'white',
   flex: 1,
+});
+
+const DepositButton = glamorous.button({
+  backgroundImage: `url(${depositSVG})`,
+  width: 190,
+  height: 80,
 });
 
 class EndScreen extends Component {
@@ -224,11 +247,7 @@ class EndScreen extends Component {
             <Text>
               <span>
                 <p>
-                  <Bold>You've won a bonus 230%!</Bold>
-                </p>
-                <p>
-                  Spend a minimum of $100 now and we'll credit you an extra{' '}
-                  <Bold>230% PlayChips!</Bold>
+                  Spend a minimum of $100 and we'll credit you an extra <Bold>230% PlayChips!</Bold>
                 </p>
               </span>
             </Text>
@@ -261,7 +280,7 @@ class EndScreen extends Component {
                       this.setState({ depositAmount: 1000 });
                     }}
                   >
-                    $1000
+                    $1,000
                   </SmallButton>
                 </InputContainer>
                 <InputContainer>
@@ -276,18 +295,22 @@ class EndScreen extends Component {
                 </InputContainer>
                 <TextContainer>
                   You will receive
-                  <Well>{depositAmount * 100}</Well>
-                  PLUS
-                  <Well>{depositAmount * 230}</Well>
+                  <Well>
+                    <PlayChip />
+                    {numeral(depositAmount * 100).format('0,0')}
+                  </Well>
+                  PLUS a bonus
+                  <Well>
+                    <PlayChip />
+                    {numeral(depositAmount * 230).format('0,0')}
+                  </Well>
                 </TextContainer>
-                <PrimaryButton
+                <DepositButton
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
                   }}
-                >
-                  Deposit
-                </PrimaryButton>
+                />
               </form>
             </Text>
           </TextContainer>
