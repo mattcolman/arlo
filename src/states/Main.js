@@ -18,6 +18,7 @@ import Reel from '../groups/Reel';
 import { TILE_WIDTH, TILE_HEIGHT, SPACING } from '../constants';
 import ValueTweener from '../ValueTweener';
 import Pool from '../pool';
+import MessageBoard from '../MessageBoard';
 
 const { TweenMax, TimelineMax, Linear, Strong, PIXI } = window;
 
@@ -372,13 +373,19 @@ export default class extends Phaser.State {
   }
 
   addBottomBar() {
-    const bottomBar = this.game.add.image(
-      209,
-      this.world.height - 100,
-      'sprites',
-      'bottombar',
-      this.world,
-    );
+    // const grp = this.game.add.group();
+    // grp.position.set(209, this.world.height - 100)
+    const bottomBar = this.game.add.image(209, 668, 'sprites', 'bottombar', this.world);
+
+    const signboard = this.game.plugins.add(MessageBoard, this.world);
+    const signboardSprite = signboard.addSprite();
+    signboardSprite.position.set(232, 690);
+    // this.signboard.setMessage('six!!', 'pulse');
+
+    this.winningsTxt = this.game.add.bitmapText(640, 684, 'panton_green', '0%', 42);
+    this.winningsTxt.anchor.x = 0.5;
+    this.spinsTxt = this.game.add.bitmapText(835, 684, 'panton_green', '5', 42);
+    this.spinsTxt.anchor.x = 0.5;
 
     this.spinBtn = this.addButton(this.world, 1029, 678, 'spin', this.spin);
     this.spinBtn.disable();

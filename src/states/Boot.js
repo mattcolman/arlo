@@ -21,7 +21,7 @@ const MANIFEST = {
   ],
   spritesheets: ['symbols', 'assets', 'particle', 'sprites'],
   images: ['background', 'star_particle', 'blue_particle'],
-  bitmap_fonts: ['pantoon_white', 'pantoon_yellow', 'phosphate'],
+  bitmap_fonts: ['panton_green'],
   fonts: {
     custom: {
       families: ['panton_extraboldregular'],
