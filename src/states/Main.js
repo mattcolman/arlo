@@ -169,12 +169,12 @@ export default class extends Phaser.State {
     const REEL_Y = 60;
 
     // add backing
-    const backing = this.game.add.image(118, 80, 'sprites', 'slotback', this.fullReelGrp);
+    const backing = this.game.add.image(111, 80, 'sprites', 'slotback', this.fullReelGrp);
 
     this.fullReelGrp = this.add.group(this.world, 'full-reel-group');
 
     const reelGrp = this.add.group(this.fullReelGrp, 'reel-group');
-    reelGrp.position.set(120, REEL_Y);
+    reelGrp.position.set(110, REEL_Y);
 
     this.reels = times(NUM_REELS, i => this.addReel(reelGrp, i * (TILE_WIDTH + SPACING), 0));
 
