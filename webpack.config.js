@@ -22,7 +22,7 @@ module.exports = {
           to: path.resolve(__dirname, 'public'),
         },
         {
-          from: path.resolve(__dirname, 'node_modules/phaser/build/phaser.js'),
+          from: path.resolve(__dirname, 'node_modules/phaser/build/phaser.min.js'),
           to: path.resolve(__dirname, 'public'),
         },
       ],
@@ -106,18 +106,18 @@ module.exports = {
               name: '[name]-[hash].[ext]',
             },
           },
-          // {
-          //   loader: 'image-webpack-loader',
-          //   options: {
-          //     progressive: true,
-          //     optipng: {
-          //       optimizationLevel: 7,
-          //     },
-          //     gifsicle: {
-          //       interlaced: false,
-          //     },
-          //   },
-          // },
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              progressive: true,
+              optipng: {
+                optimizationLevel: 7,
+              },
+              gifsicle: {
+                interlaced: false,
+              },
+            },
+          },
         ],
       },
       {
