@@ -5,7 +5,7 @@
        <pages>
             <page id='0' file='panton_green.png'/>
        </pages>
-        <chars count='43'>
+        <chars count='44'>
             <char xadvance='10' x='42' chnl='0' yoffset='45' y='38' xoffset='0' id='32' page='0' height='0' width='0'/>
             <char xadvance='29' x='200' chnl='0' yoffset='11' y='38' xoffset='3' id='48' page='0' height='36' width='28'/>
             <char xadvance='20' x='230' chnl='0' yoffset='13' y='38' xoffset='1' id='49' page='0' height='34' width='20'/>
@@ -44,10 +44,11 @@
             <char xadvance='30' x='2' chnl='0' yoffset='13' y='154' xoffset='1' id='89' page='0' height='34' width='32'/>
             <char xadvance='28' x='210' chnl='0' yoffset='13' y='2' xoffset='2' id='90' page='0' height='34' width='28'/>
             <char xadvance='12' x='34' chnl='0' yoffset='11' y='76' xoffset='3' id='33' page='0' height='36' width='10'/>
-            <char xadvance='12' x='46' chnl='0' yoffset='37' y='176' xoffset='2' id='46' page='0' height='10' width='10'/>
-            <char xadvance='11' x='46' chnl='0' yoffset='36' y='158' xoffset='2' id='44' page='0' height='16' width='10'/>
+            <char xadvance='12' x='234' chnl='0' yoffset='37' y='148' xoffset='2' id='46' page='0' height='10' width='10'/>
+            <char xadvance='11' x='222' chnl='0' yoffset='36' y='148' xoffset='2' id='44' page='0' height='16' width='10'/>
             <char xadvance='39' x='2' chnl='0' yoffset='11' y='38' xoffset='2' id='37' page='0' height='36' width='38'/>
             <char xadvance='11' x='36' chnl='0' yoffset='12' y='154' xoffset='3' id='39' page='0' height='14' width='8'/>
             <char xadvance='28' x='46' chnl='0' yoffset='9' y='2' xoffset='3' id='36' page='0' height='40' width='28'/>
+            <char xadvance='25' x='46' chnl='0' yoffset='19' y='158' xoffset='2' id='43' page='0' height='24' width='24'/>
        </chars>
    </font>

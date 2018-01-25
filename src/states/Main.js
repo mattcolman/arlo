@@ -30,6 +30,7 @@ const Debug = {
 
 const NUM_ROWS = 3;
 const NUM_COLUMNS = 5;
+const NUM_SPINS = 5;
 
 const SPIN_DELAY = 0.2;
 const STOP_DELAY = 0.4;
@@ -39,16 +40,22 @@ const ANTICIPATION_DELAY = 2;
 const Symbols = ['playchip', 'bitcoin', 'litecoin', 'ripple', 'ethereum'];
 
 const Lines = [[0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [2, 2, 2, 2, 2], [0, 1, 2, 1, 0], [2, 1, 0, 1, 2]];
+const WinTable = [...shuffle([2, 3, 3, 4]), 5];
+const PayoutTable = {
+  3: 15,
+  4: 50,
+  5: 150,
+};
 
 function pickWinningLine() {
   return random(0, Lines.length - 1);
 }
 
 function getWinningLine(lineIndex, numPlaychips) {
-  const nulls = [
+  const nulls = shuffle([
     ...times(numPlaychips, () => false),
     ...times(NUM_COLUMNS - numPlaychips, () => true),
-  ];
+  ]);
   return Lines[lineIndex].map((line, i) => (nulls[i] ? null : line));
 }
 
@@ -69,6 +76,7 @@ export default class extends Phaser.State {
     this.valueTweener = new ValueTweener();
     this.pool = new Pool();
     this.payoutTimer = new Phaser.Signal();
+    this.autoSpinEnabled = false;
 
     this.game.scale.enterIncorrectOrientation.add(() => {
       console.log('incorrect orientation');
@@ -118,6 +126,7 @@ export default class extends Phaser.State {
       Object.values(this.slotSoundsHash),
       () => {
         this.spinBtn.enable();
+        this.autoSpinBtn.enable();
       },
       this,
     );
@@ -129,6 +138,8 @@ export default class extends Phaser.State {
         fill: '#00ff00',
       });
     }
+
+    // window.Game = this;
 
     super.create();
   }
@@ -158,12 +169,12 @@ export default class extends Phaser.State {
     const REEL_Y = 60;
 
     // add backing
-    const backing = this.game.add.image(209, 80, 'sprites', 'slotback', this.fullReelGrp);
+    const backing = this.game.add.image(118, 80, 'sprites', 'slotback', this.fullReelGrp);
 
     this.fullReelGrp = this.add.group(this.world, 'full-reel-group');
 
     const reelGrp = this.add.group(this.fullReelGrp, 'reel-group');
-    reelGrp.position.set(12, REEL_Y);
+    reelGrp.position.set(120, REEL_Y);
 
     this.reels = times(NUM_REELS, i => this.addReel(reelGrp, i * (TILE_WIDTH + SPACING), 0));
 
@@ -178,23 +189,29 @@ export default class extends Phaser.State {
   }
 
   spin() {
-    this.spinBtn.disable();
+    this.spinNum += 1;
+    this.spinsTxt.text = NUM_SPINS - this.spinNum;
+
+    if (!this.autoSpinEnabled) {
+      this.spinBtn.disable();
+      this.autoSpinBtn.disable();
+    }
+
     this.slotSoundsHash.click.play();
     this.spinSnd = this.game.add.sound('spin', 1, true);
     this.spinSnd.play();
 
-    const isWin = this.spinNum === this.winSpin;
-    const numPlaychips = isWin ? 5 : random(2, 4);
+    const numPlaychips = WinTable[this.spinNum - 1];
+    const isWin = numPlaychips >= 3;
     const winningLineIndex = pickWinningLine();
     const winningLine = getWinningLine(winningLineIndex, numPlaychips);
     const results = getResults(winningLine);
-    this.spinNum += 1;
     const tl = new TimelineMax();
     this.reels.forEach((reel, i) => tl.call(reel.spin, [], reel, i * SPIN_DELAY));
-    tl.call(this.stop, [results, winningLine, isWin], this, SPIN_DURATION);
+    tl.call(this.stop, [results, winningLine, numPlaychips], this, SPIN_DURATION);
   }
 
-  stop(results, winningLine, isWin) {
+  stop(results, winningLine, numPlaychips) {
     console.log('stop', results);
     const delays = [];
     let runningSpinDelay = 0;
@@ -217,7 +234,19 @@ export default class extends Phaser.State {
           }),
         ),
     );
-    Promise.all(promises).then(() => this.handleSpinsComplete(isWin, winningLine));
+    Promise.all(promises).then(() => this.handleSpinsComplete(numPlaychips, winningLine));
+  }
+
+  autoSpin() {
+    this.autoSpinEnabled = true;
+    this.spinBtn.disable();
+    this.autoSpinBtn.disable();
+    this.autoSpinBtn.alpha = 1;
+    TweenMax.delayedCall(0.2, () => {
+      this.autoSpinBtn.animations.frameName = 'autospin_active';
+    });
+
+    this.spin();
   }
 
   analyzeResults(winningLine, currentColumn) {
@@ -232,10 +261,9 @@ export default class extends Phaser.State {
     }
 
     if (currentColumn === NUM_COLUMNS - 1) {
-      if (winningCount === 5) {
+      if (winningCount >= 3) {
         TweenMax.delayedCall(0.2, () => {
           this.slotSoundsHash.success.play();
-          this.handleGameComplete();
         });
       } else {
         this.slotSoundsHash.reaction.play();
@@ -247,19 +275,36 @@ export default class extends Phaser.State {
     });
   }
 
-  handleSpinsComplete(isWin, winningLine) {
+  handleSpinsComplete(numPlaychips, winningLine) {
     this.spinSnd.stop();
-    this.spinBtn.enable();
-    if (!isWin) {
+    if (!this.autoSpinEnabled) {
+      this.spinBtn.enable();
+      this.autoSpinBtn.enable();
+    }
+    if (numPlaychips < 3) {
       winningLine.forEach((playChipIndex, i) => {
         if (playChipIndex === null) {
           this.reels[i].greyOutNonPlayChips();
         }
       });
     } else {
+      this.animateCoinParticles(winningLine);
       this.reels.forEach((reel, i) => {
         reel.glow(i * 0.15);
       });
+    }
+
+    this.addWinnings(PayoutTable[numPlaychips]);
+    if (numPlaychips === 5) {
+      this.signboard.setMessage('JACKPOT!!', 'pulseInfinite');
+    } else if (numPlaychips >= 3) {
+      this.signboard.setMessage('WIN!!', 'pulse');
+    }
+
+    if (this.spinNum === NUM_SPINS) {
+      this.handleGameComplete();
+    } else if (this.autoSpinEnabled) {
+      this.spin();
     }
   }
 
@@ -274,11 +319,12 @@ export default class extends Phaser.State {
     const winningSlots = compact(winningLine.map((cell, i) => this.reels[i].getCard(cell)));
     winningSlots.forEach((slot) => {
       const { x, y } = slot.worldPosition;
-      const targetX = this.world.width - 300;
-      const targetY = this.world.height - 150;
+      const targetX = this.world.centerX + 100;
+      const targetY = this.world.height - 80;
       const halfX = x + (targetX - x) / 2;
       const halfY = y + (targetY - y) / 2;
-      for (let i = 0; i < 10; i++) {
+
+      for (let i = 0; i < winningSlots.length * 3; i++) {
         const coin = this.game.add.sprite(x + TILE_WIDTH / 2, y + TILE_HEIGHT / 2, 'particle');
         const anim = coin.animations.add(
           'particle',
@@ -292,12 +338,12 @@ export default class extends Phaser.State {
         coin.scale.set(random(0.5, 1));
         coin.rotation = random(0, Phaser.Math.PI2);
         coin.alpha = 0;
-        const tl = new TimelineMax({ delay: i * 0.1 + random(0, 0.1) });
+        const tl = new TimelineMax({ delay: i * 0.05 + random(0, 0.1) });
         tl
           .to(coin, 0.1, { alpha: 1 })
           .to(
             coin,
-            2,
+            1.2,
           {
             ease: Linear.easeNone,
             bezier: {
@@ -306,11 +352,12 @@ export default class extends Phaser.State {
                   { x: halfX + random(-100, 100), y: halfY + random(-100, 100) },
                   { x: targetX, y: targetY },
               ],
-              type: 'thru',
+              type: 'soft',
             },
           },
             0,
           )
+          .to(coin.scale, 1.2, { x: coin.scale.x * 0.7, y: coin.scale.x * 0.7 }, 0)
           .to(coin, 0.2, { alpha: 0 }, '-=0.2');
       }
     });
@@ -377,21 +424,33 @@ export default class extends Phaser.State {
     // grp.position.set(209, this.world.height - 100)
     const bottomBar = this.game.add.image(209, 668, 'sprites', 'bottombar', this.world);
 
-    const signboard = this.game.plugins.add(MessageBoard, this.world);
-    const signboardSprite = signboard.addSprite();
-    signboardSprite.position.set(232, 690);
-    // this.signboard.setMessage('six!!', 'pulse');
+    this.signboard = this.game.plugins.add(MessageBoard, this.world);
+    const signboardSprite = this.signboard.addSprite();
+    signboardSprite.position.set(356, 688);
 
-    this.winningsTxt = this.game.add.bitmapText(640, 684, 'panton_green', '0%', 42);
+    this.winnings = 0;
+    this.winningsTxt = this.game.add.bitmapText(765, 688, 'panton_green', '+0%', 36);
     this.winningsTxt.anchor.x = 0.5;
-    this.spinsTxt = this.game.add.bitmapText(835, 684, 'panton_green', '5', 42);
+
+    this.spinsTxt = this.game.add.bitmapText(965, 688, 'panton_green', '5', 36);
     this.spinsTxt.anchor.x = 0.5;
 
-    this.spinBtn = this.addButton(this.world, 1029, 678, 'spin', this.spin);
+    this.spinBtn = this.addButton(this.world, 1028, 672, 'spin', this.spin);
     this.spinBtn.disable();
+    this.autoSparkle(this.spinBtn);
 
-    this.autoSpinBtn = this.addButton(this.world, 904, 678, 'autospin', this.spin);
+    this.autoSpinBtn = this.addButton(this.world, 216, 672, 'autospin', this.autoSpin);
     this.autoSpinBtn.disable();
+  }
+
+  addWinnings(increment) {
+    TweenMax.to(this, 1, {
+      delay: 1,
+      winnings: this.winnings + increment,
+      onUpdate: () => {
+        this.winningsTxt.text = `+${Math.floor(this.winnings)}%`;
+      },
+    });
   }
 
   addButton(parent, x, y, key, callback) {

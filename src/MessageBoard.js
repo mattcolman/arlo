@@ -17,7 +17,7 @@ class MessageBoard extends Phaser.Plugin {
   style = 'scroll';
   init(parent) {
     this.parent = parent;
-    this.txt = this.game.make.bitmapText(0, 0, 'panton_green', '', 32, parent);
+    this.txt = this.game.make.bitmapText(0, 0, 'panton_green', '', 36, parent);
     this.renderTexture = this.game.add.renderTexture(
       this.textureBounds.width,
       this.textureBounds.height,
@@ -60,6 +60,9 @@ class MessageBoard extends Phaser.Plugin {
     const animations = {
       scroll: this.scroll,
       pulse: this.pulse,
+      pulseInfinite: () => {
+        this.pulse(true);
+      },
     };
     return animations[style].apply(this);
   }
@@ -80,10 +83,10 @@ class MessageBoard extends Phaser.Plugin {
     }
   };
 
-  pulse() {
+  pulse(infinite = false) {
     this.txt.x = (this.textureBounds.width - this.txt.width) / 2;
     return new TimelineMax({
-      repeat: 4,
+      repeat: infinite ? -1 : 4,
       onComplete: this.handleMessageComplete,
       onCompleteScope: this,
     })
