@@ -163,19 +163,27 @@ export default class Reel extends Phaser.Group {
   makeCard(parent) {
     const grp = this.game.add.group(parent);
     const sprite = this.game.add.sprite(0, 0, 'symbols', null, grp);
-    sprite.animations.add(
-      'playchip',
-      Phaser.Animation.generateFrameNames('playchip', 1, 74, '', 4),
+    const anim = sprite.animations.add(
+      'playchip-start',
+      Phaser.Animation.generateFrameNames('playchip', 1, 4, '', 4),
+      30,
+    );
+    const loopAnim = sprite.animations.add(
+      'playchip-loop',
+      Phaser.Animation.generateFrameNames('playchip', 4, 74, '', 4),
       30,
       true,
     );
+    anim.onComplete.addOnce(() => {
+      loopAnim.play();
+    }, this);
     sprite.width = TILE_WIDTH;
     sprite.height = TILE_HEIGHT;
     grp.setSymbol = (symbolName) => {
       grp.name = symbolName;
       if (symbolName === 'playchip') {
         // symbol.animations.stop('symbols', true);
-        sprite.frameName = 'playchip0001';
+        sprite.frameName = 'playchip0000';
       } else {
         sprite.animations.stop();
         sprite.frameName = symbolName;

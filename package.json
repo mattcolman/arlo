@@ -17,7 +17,6 @@
   },
   "license": "ISC",
   "dependencies": {
-    "fp-api": "git+ssh://bitbucket.org/sportsfantasypro/fp-api.git#v5.2.1",
     "glamor": "^2.20.40",
     "glamorous": "^4.11.0",
     "gsap": "^1.19.0",

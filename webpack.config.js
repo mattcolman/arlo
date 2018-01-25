@@ -106,18 +106,18 @@ module.exports = {
               name: '[name]-[hash].[ext]',
             },
           },
-          {
-            loader: 'image-webpack-loader',
-            options: {
-              progressive: true,
-              optipng: {
-                optimizationLevel: 7,
-              },
-              gifsicle: {
-                interlaced: false,
-              },
-            },
-          },
+          // {
+          //   loader: 'image-webpack-loader',
+          //   options: {
+          //     progressive: true,
+          //     optipng: {
+          //       optimizationLevel: 7,
+          //     },
+          //     gifsicle: {
+          //       interlaced: false,
+          //     },
+          //   },
+          // },
         ],
       },
       {

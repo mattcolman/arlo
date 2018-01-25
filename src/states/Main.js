@@ -35,7 +35,7 @@ const STOP_DELAY = 0.4;
 const SPIN_DURATION = 1.2;
 const ANTICIPATION_DELAY = 2;
 
-const Symbols = ['playchip', 'bball', 'football', 'baseball', 'cricket', 'soccer'];
+const Symbols = ['playchip', 'bitcoin', 'litecoin', 'ripple', 'ethereum'];
 
 const Lines = [[0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [2, 2, 2, 2, 2], [0, 1, 2, 1, 0], [2, 1, 0, 1, 2]];
 
@@ -86,8 +86,10 @@ export default class extends Phaser.State {
 
     this.addSlots();
 
-    this.spinBtn = this.addSpinButton();
-    this.spinBtn.disable();
+    const title = this.game.add.image(this.world.centerX - 16, -26, 'sprites', 'title');
+    title.anchor.x = 0.5;
+
+    this.addBottomBar();
 
     const slotSounds = [
       'select1',
@@ -127,8 +129,6 @@ export default class extends Phaser.State {
       });
     }
 
-    // this.explodeParticles();
-
     super.create();
   }
 
@@ -150,19 +150,19 @@ export default class extends Phaser.State {
   }
 
   addSlots() {
-    this.fullReelGrp = this.add.group(this.world, 'full-reel-group');
-
     const NUM_REELS = 5;
     const w = (TILE_WIDTH + SPACING) * NUM_REELS;
     const h = TILE_HEIGHT * NUM_ROWS;
 
-    const REEL_Y = 44;
+    const REEL_Y = 60;
 
     // add backing
-    const backing = this.addBacking(this.fullReelGrp, w + 5, h + REEL_Y + 5);
+    const backing = this.game.add.image(209, 80, 'sprites', 'slotback', this.fullReelGrp);
+
+    this.fullReelGrp = this.add.group(this.world, 'full-reel-group');
 
     const reelGrp = this.add.group(this.fullReelGrp, 'reel-group');
-    reelGrp.position.set(5, REEL_Y);
+    reelGrp.position.set(12, REEL_Y);
 
     this.reels = times(NUM_REELS, i => this.addReel(reelGrp, i * (TILE_WIDTH + SPACING), 0));
 
@@ -174,16 +174,6 @@ export default class extends Phaser.State {
     reelGrp.mask = rect;
 
     this.fullReelGrp.position.set((this.world.width - backing.width) / 2, 30);
-  }
-
-  addSpinButton() {
-    return this.addButton(
-      this.world,
-      this.world.width - 300,
-      this.world.height - 150,
-      'spin',
-      this.spin,
-    );
   }
 
   spin() {
@@ -381,10 +371,20 @@ export default class extends Phaser.State {
     });
   }
 
-  addBacking(parent, w, h) {
-    const g = this.game.add.graphics(0, 0, parent);
-    g.beginFill(0xfed700).drawRect(0, 0, w, h);
-    return g;
+  addBottomBar() {
+    const bottomBar = this.game.add.image(
+      209,
+      this.world.height - 100,
+      'sprites',
+      'bottombar',
+      this.world,
+    );
+
+    this.spinBtn = this.addButton(this.world, 1029, 678, 'spin', this.spin);
+    this.spinBtn.disable();
+
+    this.autoSpinBtn = this.addButton(this.world, 904, 678, 'autospin', this.spin);
+    this.autoSpinBtn.disable();
   }
 
   addButton(parent, x, y, key, callback) {
@@ -393,7 +393,7 @@ export default class extends Phaser.State {
     const btn = this.game.add.button(
       x,
       y,
-      'assets',
+      'sprites',
       callback,
       this,
       key,
