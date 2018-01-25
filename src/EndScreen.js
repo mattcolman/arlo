@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import glamorous, { Div } from 'glamorous';
+import glamorous, { Div, Span } from 'glamorous';
 import numeral from 'numeral';
 import { css } from 'glamor';
 import congratsImg from '../assets/images/congrats.png';
@@ -25,7 +25,7 @@ const Modal = glamorous.div({
   left: 0,
   width: '100vw',
   height: '100vh',
-  backgroundColor: 'rgba(0, 0, 0, 0.25)',
+  backgroundColor: 'rgba(0, 0, 0, 0.7)',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -50,14 +50,16 @@ const Container = glamorous.div({
   display: 'flex',
   flexDirection: 'column',
   position: 'relative',
-  margin: 10,
-  paddingTop: 20,
-  maxWidth: 500,
+  // margin: 10,
+  // paddingTop: 20,
+  maxWidth: 600,
   backgroundColor: '#144661',
   borderRadius: 8,
   // border: '10px solid #f5b84f',
   color: 'white',
   fontWeight: 500,
+  maxHeight: '100vh',
+  // overflow: 'scroll',
 });
 
 const CongratsBanner = glamorous.img({
@@ -90,13 +92,6 @@ const Bold = glamorous.span({
   },
 });
 
-const ButtonsContainer = glamorous.div({
-  display: 'flex',
-  justifyContent: 'center',
-  padding: 10,
-  paddingBottom: 20,
-});
-
 const Button = glamorous.button({
   borderRadius: 8,
   padding: 10,
@@ -108,50 +103,6 @@ const Button = glamorous.button({
   textTransform: 'uppercase',
   width: 120,
   cursor: 'pointer',
-});
-
-const PrimaryButton = glamorous(Button)({
-  backgroundColor: '#1d668b',
-  '&:hover': {
-    backgroundColor: '#3587b1',
-  },
-});
-
-const SecondaryButton = glamorous(Button)({
-  backgroundColor: '#f15133',
-  '&:hover': {
-    backgroundColor: '#ff8758',
-  },
-});
-
-const BareButton = glamorous.button({
-  backgroundColor: 'inherit',
-  color: 'white',
-  border: 'none',
-  padding: 0,
-  paddingLeft: 6,
-  paddingBottom: 20,
-  cursor: 'pointer',
-  textTransform: 'uppercase',
-  textDecoration: 'underline',
-  '&:hover': {
-    opacity: 0.8,
-  },
-});
-
-const BottomSection = glamorous.div({
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center',
-});
-
-const Link = glamorous.a({
-  color: 'white',
-  textDecoration: 'underline',
-  '&:hover': {
-    opacity: 0.8,
-  },
 });
 
 const Footer = glamorous.div({
@@ -167,30 +118,38 @@ const Logo = glamorous.img({
   height: 25,
 });
 
-const rotation = css.keyframes({
-  from: {
-    transform: 'rotate(0deg)',
-  },
-  to: {
-    transform: 'rotate(359deg)',
-  },
+const Flex = glamorous.div({
+  display: 'flex',
+  width: '100%',
+  justifyContent: 'center',
+  alignItems: 'center',
+  padding: 6,
 });
 
-const Spinner = glamorous.div({
-  animation: `${rotation} .6s infinite linear`,
-  borderRadius: '100%',
-  display: 'flex',
-  marginLeft: 'auto',
-  marginRight: 'auto',
-  borderBottom: '2px solid rgba(255, 255, 255, 0.3)',
-  borderLeft: '2px solid rgba(255, 255, 255, 0.3)',
-  borderRight: '2px solid rgba(255, 255, 255, 0.3)',
-  borderTop: '2px solid rgba(255, 255, 255, 1)',
-  height: 30,
-  width: 30,
-  marginBottom: 30,
-  marginTop: 10,
-});
+// const rotation = css.keyframes({
+//   from: {
+//     transform: 'rotate(0deg)',
+//   },
+//   to: {
+//     transform: 'rotate(359deg)',
+//   },
+// });
+
+// const Spinner = glamorous.div({
+//   animation: `${rotation} .6s infinite linear`,
+//   borderRadius: '100%',
+//   display: 'flex',
+//   marginLeft: 'auto',
+//   marginRight: 'auto',
+//   borderBottom: '2px solid rgba(255, 255, 255, 0.3)',
+//   borderLeft: '2px solid rgba(255, 255, 255, 0.3)',
+//   borderRight: '2px solid rgba(255, 255, 255, 0.3)',
+//   borderTop: '2px solid rgba(255, 255, 255, 1)',
+//   height: 30,
+//   width: 30,
+//   marginBottom: 30,
+//   marginTop: 10,
+// });
 
 const InputContainer = glamorous.div({
   display: 'flex',
@@ -245,6 +204,12 @@ const DepositButton = glamorous.button({
   animation: `${pulse} 2s infinite ease-in-out`,
 });
 
+const OverflowContainer = glamorous.div({
+  paddingTop: 40,
+  overflow: 'scroll',
+  height: '100%',
+});
+
 class EndScreen extends Component {
   state = { depositAmount: 100 };
 
@@ -258,7 +223,7 @@ class EndScreen extends Component {
       <Modal>
         <Container>
           <CongratsBanner src={congratsImg} />
-          <Div paddingTop={40}>
+          <OverflowContainer>
             <TextContainer>
               <Text>
                 <p>
@@ -307,18 +272,18 @@ class EndScreen extends Component {
                       }}
                     />
                   </InputContainer>
-                  <TextContainer>
-                    You will receive
+                  <Flex>
+                    <Span padding="0 6px">You will receive</Span>
                     <Well>
                       <PlayChip />
                       {numeral(depositAmount * 100).format('0,0')}
                     </Well>
-                    PLUS a bonus
+                    <Span padding="0 6px">PLUS a bonus</Span>
                     <Well>
                       <PlayChip />
                       {numeral(depositAmount * 230).format('0,0')}
                     </Well>
-                  </TextContainer>
+                  </Flex>
                   <DepositButton
                     onClick={(e) => {
                       e.stopPropagation();
@@ -328,7 +293,7 @@ class EndScreen extends Component {
                 </form>
               </Text>
             </TextContainer>
-          </Div>
+          </OverflowContainer>
           <Footer>
             <Logo src={logoImage} />
           </Footer>
