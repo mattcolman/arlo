@@ -79,12 +79,10 @@ export default class extends Phaser.State {
     this.autoSpinEnabled = false;
 
     this.game.scale.enterIncorrectOrientation.add(() => {
-      console.log('incorrect orientation');
-      this.game.stage.visible = false;
+      this.game.onEnterIncorrectOrientation.dispatch();
     });
-
     this.game.scale.leaveIncorrectOrientation.add(() => {
-      window.location.reload();
+      this.game.onLeaveIncorrectOrientation.dispatch();
     });
 
     this.winSpin = random(1, 4);
