@@ -1,17 +1,10 @@
 import Phaser from 'phaser';
 import sample from 'lodash/sample';
 import compact from 'lodash/compact';
-import first from 'lodash/first';
-import get from 'lodash/get';
 import take from 'lodash/take';
 import times from 'lodash/times';
 import without from 'lodash/without';
-import fill from 'lodash/fill';
-import last from 'lodash/last';
-import sortBy from 'lodash/sortBy';
-import mapValues from 'lodash/mapValues';
 import random from 'lodash/random';
-import reduce from 'lodash/reduce';
 import shuffle from 'lodash/shuffle';
 import 'gsap';
 import Reel from '../groups/Reel';
@@ -20,7 +13,7 @@ import ValueTweener from '../ValueTweener';
 import Pool from '../pool';
 import MessageBoard from '../MessageBoard';
 
-const { TweenMax, TimelineMax, Linear, Strong, PIXI } = window;
+const { TweenMax, TimelineMax, Linear, PIXI } = window;
 
 const Debug = {
   config: {
@@ -79,7 +72,7 @@ export default class extends Phaser.State {
     this.autoSpinEnabled = false;
 
     this.winSpin = random(1, 4);
-    console.log('winSpin is', this.winSpin);
+    // console.log('winSpin is', this.winSpin);
     this.spinNum = 0;
 
     this.addBackground();
@@ -205,7 +198,7 @@ export default class extends Phaser.State {
   }
 
   stop(results, winningLine, numPlaychips) {
-    console.log('stop', results);
+    // console.log('stop', results);
     const delays = [];
     let runningSpinDelay = 0;
     let count = 0;
@@ -355,6 +348,8 @@ export default class extends Phaser.State {
   }
 
   explodeParticles() {
+    this.game.camera.flash();
+    // this.game.camera.shake(0.01, 200);
     const emitter = this.game.add.emitter(this.game.world.centerX, 200, 200);
     emitter.width = 300;
     emitter.height = 200;
@@ -409,7 +404,7 @@ export default class extends Phaser.State {
   addBottomBar() {
     // const grp = this.game.add.group();
     // grp.position.set(209, this.world.height - 100)
-    const bottomBar = this.game.add.image(209, 668, 'sprites', 'bottombar', this.world);
+    const bottomBar = this.game.add.image(209, 668, 'sprites', 'bottombar');
 
     this.signboard = this.game.plugins.add(MessageBoard, this.world);
     const signboardSprite = this.signboard.addSprite();

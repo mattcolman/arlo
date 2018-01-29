@@ -1,7 +1,6 @@
 import times from 'lodash/times';
-import shuffle from 'lodash/shuffle';
 import sample from 'lodash/sample';
-import { TILE_WIDTH, TILE_HEIGHT, SPACING } from '../constants';
+import { TILE_WIDTH, TILE_HEIGHT } from '../constants';
 import '../filters/BlurY';
 import '../filters/Gray';
 
@@ -124,20 +123,6 @@ export default class Reel extends Phaser.Group {
     sprite.blendMode = PIXI.blendModes.ADD;
     sprite.visible = false;
     return sprite;
-    // const grp = this.game.add.group(parent);
-    // grp.position.set(x, y);
-    // grp.visible = false;
-    //
-    // // overlay
-    // const g = this.game.add.graphics(0, 0, grp);
-    // g.beginFill(0xfed700, 0.8).drawRect(0, 0, TILE_WIDTH, TILE_HEIGHT);
-    // g.blendMode = PIXI.blendModes.ADD;
-    //
-    // // outline
-    // const ol = this.game.add.graphics(0, 0, grp);
-    // ol.lineStyle(10, 0xf4c60b).drawRect(0, 0, TILE_WIDTH, TILE_HEIGHT);
-    //
-    // return grp;
   }
 
   makeLine() {
