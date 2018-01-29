@@ -78,13 +78,6 @@ export default class extends Phaser.State {
     this.payoutTimer = new Phaser.Signal();
     this.autoSpinEnabled = false;
 
-    this.game.scale.enterIncorrectOrientation.add(() => {
-      this.game.onEnterIncorrectOrientation.dispatch();
-    });
-    this.game.scale.leaveIncorrectOrientation.add(() => {
-      this.game.onLeaveIncorrectOrientation.dispatch();
-    });
-
     this.winSpin = random(1, 4);
     console.log('winSpin is', this.winSpin);
     this.spinNum = 0;
@@ -138,6 +131,8 @@ export default class extends Phaser.State {
     }
 
     // window.Game = this;
+
+    // const coin = this.game.add.sprite(TILE_WIDTH / 2, TILE_HEIGHT / 2, 'particle');
 
     super.create();
   }
@@ -315,6 +310,8 @@ export default class extends Phaser.State {
 
   animateCoinParticles(winningLine) {
     const winningSlots = compact(winningLine.map((cell, i) => this.reels[i].getCard(cell)));
+    const frameNames = Phaser.Animation.generateFrameNames('particle', 1, 33, '', 4);
+    // const spriteBatch = this.game.add.spriteBatch();
     winningSlots.forEach((slot) => {
       const { x, y } = slot.worldPosition;
       const targetX = this.world.centerX + 100;
@@ -324,12 +321,7 @@ export default class extends Phaser.State {
 
       for (let i = 0; i < winningSlots.length * 3; i++) {
         const coin = this.game.add.sprite(x + TILE_WIDTH / 2, y + TILE_HEIGHT / 2, 'particle');
-        const anim = coin.animations.add(
-          'particle',
-          Phaser.Animation.generateFrameNames('particle', 1, 33, '', 4),
-          30,
-          true,
-        );
+        const anim = coin.animations.add('particle', frameNames, 30, true);
         anim.play();
         anim.frame = random(0, 32);
         coin.anchor.set(0.5);
@@ -357,6 +349,7 @@ export default class extends Phaser.State {
           )
           .to(coin.scale, 1.2, { x: coin.scale.x * 0.7, y: coin.scale.x * 0.7 }, 0)
           .to(coin, 0.2, { alpha: 0 }, '-=0.2');
+        // spriteBatch.addChild(coin);
       }
     });
   }
@@ -370,13 +363,9 @@ export default class extends Phaser.State {
     emitter.setAlpha(0, 1, 500);
     emitter.setXSpeed(-200, 200);
     emitter.setYSpeed(-300, 300);
+    const frameNames = Phaser.Animation.generateFrameNames('particle', 1, 33, '', 4);
     emitter.forEach((p) => {
-      const anim = p.animations.add(
-        'particle',
-        Phaser.Animation.generateFrameNames('particle', 1, 33, '', 4),
-        30,
-        true,
-      );
+      const anim = p.animations.add('particle', frameNames, 30, true);
       p.rotation = random(0, Phaser.Math.PI2);
       anim.play();
       anim.frame = random(0, 32);

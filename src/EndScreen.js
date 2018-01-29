@@ -58,13 +58,13 @@ const Container = glamorous.div({
   // border: '10px solid #f5b84f',
   color: 'white',
   fontWeight: 500,
-  maxHeight: '100vh',
+  maxHeight: '90vh',
   // overflow: 'scroll',
 });
 
 const CongratsBanner = glamorous.img({
   width: 'auto',
-  height: 120,
+  height: 90,
   position: 'absolute',
   top: -20,
   left: '50%',
@@ -73,12 +73,13 @@ const CongratsBanner = glamorous.img({
 
 const TextContainer = glamorous.div({
   padding: 20,
+  paddingTop: 0,
   textAlign: 'center',
 });
 
 const Text = glamorous.div({
   fontSize: 13,
-  padding: 5,
+  padding: 3,
   '@media (min-width: 1281px)': {
     fontSize: 18,
   },
@@ -90,19 +91,6 @@ const Bold = glamorous.span({
   '@media (min-width: 1281px)': {
     fontSize: 22,
   },
-});
-
-const Button = glamorous.button({
-  borderRadius: 8,
-  padding: 10,
-  textAlign: 'center',
-  color: 'white',
-  border: 'none',
-  marginLeft: 10,
-  marginRight: 10,
-  textTransform: 'uppercase',
-  width: 120,
-  cursor: 'pointer',
 });
 
 const Footer = glamorous.div({
@@ -177,7 +165,7 @@ const Well = glamorous.div({
 });
 
 const SmallButton = glamorous.button({
-  padding: 10,
+  padding: 6,
   backgroundColor: '#333',
   color: 'white',
   flex: 1,
@@ -185,13 +173,13 @@ const SmallButton = glamorous.button({
 
 const pulse = css.keyframes({
   '0%': {
-    transform: 'scale(1)',
+    transform: 'scale(0.9)',
   },
   '50%': {
-    transform: 'scale(1.1)',
+    transform: 'scale(1)',
   },
   '100%': {
-    transform: 'scale(1)',
+    transform: 'scale(0.9)',
   },
 });
 
@@ -205,7 +193,7 @@ const DepositButton = glamorous.button({
 });
 
 const OverflowContainer = glamorous.div({
-  paddingTop: 40,
+  marginTop: 50,
   overflow: 'scroll',
   height: '100%',
 });
@@ -226,9 +214,8 @@ class EndScreen extends Component {
           <OverflowContainer>
             <TextContainer>
               <Text>
-                <p>
-                  Spend a minimum of $100 and we'll credit you an extra <Bold>230% PlayChips!</Bold>
-                </p>
+                {"Spend a minimum of $100 and we'll credit you an extra "}
+                <Bold>230% PlayChips!</Bold>
               </Text>
               <Text>
                 How much would you like to spend?

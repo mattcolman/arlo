@@ -78,7 +78,9 @@ class Root extends Component {
       this.setState({ isWrongOrientation: true });
     });
     game.onLeaveIncorrectOrientation.add(() => {
-      window.location.reload();
+      game.stage.visible = true;
+      this.setState({ isWrongOrientation: false });
+      // window.location.reload();
     });
     return game;
   }

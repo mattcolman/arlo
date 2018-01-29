@@ -96,7 +96,7 @@ export default class Reel extends Phaser.Group {
         this.overlay.visible = true;
         TweenMax.to(this.overlay, 1, { alpha: 0, repeat: -1, yoyo: true, delay });
       } else {
-        this.part[1].cards[i].filters = [this.grayFilter];
+        // this.part[1].cards[i].filters = [this.grayFilter];
       }
     });
   }
@@ -104,7 +104,7 @@ export default class Reel extends Phaser.Group {
   greyOutNonPlayChips() {
     this.part[1].cards.forEach((card, i) => {
       if (this.results[i] !== 'playchip') {
-        this.part[1].cards[i].filters = [this.grayFilter];
+        // this.part[1].cards[i].filters = [this.grayFilter];
       }
     });
   }
@@ -120,20 +120,24 @@ export default class Reel extends Phaser.Group {
   }
 
   addOverlay(parent, x, y) {
-    const grp = this.game.add.group(parent);
-    grp.position.set(x, y);
-    grp.visible = false;
-
-    // overlay
-    const g = this.game.add.graphics(0, 0, grp);
-    g.beginFill(0xfed700, 0.8).drawRect(0, 0, TILE_WIDTH, TILE_HEIGHT);
-    g.blendMode = PIXI.blendModes.ADD;
-
-    // outline
-    const ol = this.game.add.graphics(0, 0, grp);
-    ol.lineStyle(10, 0xf4c60b).drawRect(0, 0, TILE_WIDTH, TILE_HEIGHT);
-
-    return grp;
+    const sprite = this.game.add.image(x, y, 'glow', null, parent);
+    sprite.blendMode = PIXI.blendModes.ADD;
+    sprite.visible = false;
+    return sprite;
+    // const grp = this.game.add.group(parent);
+    // grp.position.set(x, y);
+    // grp.visible = false;
+    //
+    // // overlay
+    // const g = this.game.add.graphics(0, 0, grp);
+    // g.beginFill(0xfed700, 0.8).drawRect(0, 0, TILE_WIDTH, TILE_HEIGHT);
+    // g.blendMode = PIXI.blendModes.ADD;
+    //
+    // // outline
+    // const ol = this.game.add.graphics(0, 0, grp);
+    // ol.lineStyle(10, 0xf4c60b).drawRect(0, 0, TILE_WIDTH, TILE_HEIGHT);
+    //
+    // return grp;
   }
 
   makeLine() {

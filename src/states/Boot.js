@@ -19,8 +19,8 @@ const MANIFEST = {
     'stick',
     'reaction',
   ],
-  spritesheets: ['symbols', 'assets', 'particle', 'sprites'],
-  images: ['background', 'star_particle', 'blue_particle'],
+  spritesheets: ['symbols', 'particle', 'sprites'],
+  images: ['background', 'star_particle', 'blue_particle', 'glow'],
   bitmap_fonts: ['panton_green'],
   fonts: {
     custom: {
@@ -49,6 +49,15 @@ export default class extends Phaser.State {
     }
     this.input.maxPointers = 1;
     this.scaleGame();
+
+    this.game.scale.enterIncorrectOrientation.add(() => {
+      this.game.onEnterIncorrectOrientation.dispatch();
+    });
+    this.game.scale.leaveIncorrectOrientation.add(() => {
+      this.game.onLeaveIncorrectOrientation.dispatch();
+      this.scaleGame();
+    });
+    this.game.clearBeforeRender = false;
   }
 
   scaleGame = () => {
