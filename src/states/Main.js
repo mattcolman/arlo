@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import 'gsap';
+// import { SwipeCarousel } from 'phaser-list-view';
 
 const { TweenMax, TimelineMax, Linear, PIXI } = window;
 
@@ -10,14 +11,21 @@ const Debug = {
 };
 
 export default class extends Phaser.State {
+  preload() {
+    this.load.image('shrek2', '/shrek2.jpg');
+  }
+
   create() {
     this.initSounds();
 
-    const main = this.add.image(0, 0, 'main')
+    window.fetch('/config.json').then(res => res.json()).then((json) => {
+      console.log('hi json', json);
+    });
+    const main = this.add.image(0, 0, 'main');
 
-    const dvds = this.add.button(200, 190, 'sprites', this.handleBooksClick, this, 'dvds_selected', 'dvds', 'dvds_selected', 'dvds')
+    const dvds = this.add.button(200, 190, 'sprites', this.handleDvdsClick, this, 'dvds_selected', 'dvds', 'dvds_selected', 'dvds');
 
-    const books = this.add.button(428, 338, 'sprites', this.handleBooksClick, this, 'books_selected', 'books', 'books_selected', 'books')
+    const books = this.add.button(428, 338, 'sprites', this.handleBooksClick, this, 'books_selected', 'books', 'books_selected', 'books');
 
     this.addCircles();
 
@@ -36,6 +44,10 @@ export default class extends Phaser.State {
 
   handleBooksClick() {
 
+  }
+
+  handleDvdsClick() {
+    this.add.image(0, 0, 'shrek2');
   }
 
   addCircles() {
