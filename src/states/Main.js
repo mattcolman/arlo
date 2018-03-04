@@ -42,14 +42,22 @@ export default class extends Phaser.State {
   createGame() {
     const main = this.add.image(0, 0, 'main');
 
-    const arlo = this.add.image(this.world.centerX, this.world.height, 'arlo');
-    arlo.anchor.set(0.5, 1);
-
     this.addPhotos();
 
     const dvds = this.add.button(200, 190, 'sprites', this.handleDvdsClick, this, 'dvds_selected', 'dvds', 'dvds_selected', 'dvds');
     const books = this.add.button(428, 338, 'sprites', this.handleBooksClick, this, 'books_selected', 'books', 'books_selected', 'books');
     const toys = this.add.button(1000, 380, 'sprites', this.handleToysClick, this, 'toys_selected', 'toys', 'toys_selected', 'toys');
+    const globe = this.add.button(200, 430, 'sprites', this.handleGlobeClick, this, 'globe_selected', 'globe', 'globe_selected', 'globe');
+
+    this.white = this.add.graphics();
+    this.white.beginFill(0xffffff)
+     .drawRect(0, 0, this.world.width, this.world.height);
+    this.white.alpha = 0;
+
+    this.arlo = this.add.image(this.world.centerX, this.world.height, 'arlo');
+    this.arlo.anchor.set(0.5, 1);
+    this.arlo.inputEnabled = true;
+    this.arlo.events.onInputUp.add(this.handleArloClick, this);
   }
 
   addPhotos() {
@@ -102,6 +110,17 @@ export default class extends Phaser.State {
   contractImage(img) {
     const { orgX, orgY, orgWidth, orgHeight } = img.data;
     TweenMax.to(img, 0.5, { x: orgX, y: orgY, width: orgWidth, height: orgHeight, ease: Strong.easeOut });
+  }
+
+  handleArloClick() {
+    TweenMax.to(this.white, 0.5, { alpha: 0.5 });
+    TweenMax.to(this.arlo.scale, 0.5, { x: 1.4, y: 1.4, ease: Strong.easeOut });
+    TweenMax.to(this.arlo, 0.5, { y: '+=250', ease: Strong.easeOut });
+    this.addCircles();
+  }
+
+  handleGlobeClick() {
+
   }
 
   handleBooksClick() {
@@ -164,7 +183,7 @@ export default class extends Phaser.State {
     const distance = 200;
     for (let i = 0; i < numCircles; i++) {
       const g = this.game.add.graphics(
-        665 + Math.sin(1.2 + angle * (i + 1)) * distance,
+        685 + Math.sin(1.2 + angle * (i + 1)) * distance,
         320 + Math.cos(1.2 + angle * (i + 1)) * distance,
       );
       g.beginFill(colors[i]);
