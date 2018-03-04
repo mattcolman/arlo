@@ -8,20 +8,10 @@ const req = require.context('../../assets', true, /.*\.png|json|ttf|woff|woff2|x
 
 const MANIFEST = {
   audio: [
-    'click',
-    'spin',
-    'select1',
-    'select2',
-    'select3',
-    'select4',
-    'select5',
-    'success',
-    'stick',
-    'reaction',
   ],
-  spritesheets: ['symbols', 'particle', 'sprites'],
-  images: ['background', 'star_particle', 'blue_particle', 'glow'],
-  bitmap_fonts: ['panton_green'],
+  spritesheets: ['sprites'],
+  images: ['main'],
+  bitmap_fonts: [],
   fonts: {
     custom: {
       families: ['panton_extraboldregular'],

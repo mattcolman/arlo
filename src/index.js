@@ -1,15 +1,28 @@
-import React from 'react';
-import { render } from 'react-dom';
-import Root from './Root';
+import BootState from './states/Boot';
 
-const mountPoint = document.getElementById('app');
+function createGame() {
+  const isDesktop = true
+  const WORLD_WIDTH = isDesktop ? 1366 : 1366;
+  const WORLD_HEIGHT = isDesktop ? 768 : 768;
 
-render(<Root />, mountPoint);
+  const config = {
+    transparent: true,
+    width: WORLD_WIDTH,
+    height: WORLD_HEIGHT,
+    parent: 'game',
+    resolution: 1,
+    state: BootState,
+    renderer: Phaser.AUTO,
+  };
 
-if (module.hot) {
-  module.hot.accept('./Root', () => {
-    const NextRoot = require('./Root').default; // eslint-disable-line global-require
-
-    render(<NextRoot />, mountPoint);
+  const game = new Phaser.Game(config);
+  game.onEnterIncorrectOrientation = new Phaser.Signal();
+  game.onLeaveIncorrectOrientation = new Phaser.Signal();
+  game.onEnterIncorrectOrientation.add(() => {
   });
+  game.onLeaveIncorrectOrientation.add(() => {
+  });
+  return game;
 }
+
+createGame();
