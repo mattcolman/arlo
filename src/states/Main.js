@@ -71,8 +71,37 @@ export default class extends Phaser.State {
         img.height = maxHeight;
         img.scale.x = img.scale.y;
       }
+      img.data.orgWidth = img.width;
+      img.data.orgHeight = img.height;
+      img.data.orgX = img.x;
+      img.data.orgY = img.y;
       img.anchor.set(0.5);
+      img.inputEnabled = true;
+      img.events.onInputUp.add(this.toggleImageClick, this);
     }
+  }
+
+  toggleImageClick(img) {
+    if (img.width === img.data.orgWidth) {
+      this.expandImage(img);
+    } else {
+      this.contractImage(img);
+    }
+  }
+
+  expandImage(img) {
+    const width = 600;
+    const currentScale = img.scale.x;
+    img.width = width;
+    img.scale.y = img.scale.x;
+    img.bringToTop();
+    TweenMax.from(img.scale, 0.5, { x: currentScale, y: currentScale, ease: Strong.easeOut });
+    TweenMax.to(img, 0.5, { x: this.world.centerX, y: this.world.centerY, ease: Strong.easeOut });
+  }
+
+  contractImage(img) {
+    const { orgX, orgY, orgWidth, orgHeight } = img.data;
+    TweenMax.to(img, 0.5, { x: orgX, y: orgY, width: orgWidth, height: orgHeight, ease: Strong.easeOut });
   }
 
   handleBooksClick() {
@@ -121,7 +150,7 @@ export default class extends Phaser.State {
         }
         img.anchor.set(0.5);
         const tl = new TimelineMax({ delay: j * 0.5 + i * 0.1 });
-        tl.from(img, 1, { rotation: 1, y: '+=200', ease: Strong.easeOut, alpha: 0 });
+        tl.from(img, 0.8, { rotation: 1, y: '+=200', ease: Strong.easeOut, alpha: 0 });
           // .from(img.scale, 1, { x: 0.5, y: 0.5, ease: Strong.easeOut }, 0);
       });
       listView.add(rowGrp);
