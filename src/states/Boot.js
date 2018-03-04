@@ -10,7 +10,7 @@ const MANIFEST = {
   audio: [
   ],
   spritesheets: ['sprites'],
-  images: ['main'],
+  images: ['main', 'arlo'],
   bitmap_fonts: [],
   fonts: {
     custom: {

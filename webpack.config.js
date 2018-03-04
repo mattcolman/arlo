@@ -18,10 +18,6 @@ module.exports = {
     new CopyWebpackPlugin(
       [
         {
-          from: 'static',
-          to: path.resolve(__dirname, 'public'),
-        },
-        {
           from: path.resolve(__dirname, 'node_modules/phaser/build/phaser.min.js'),
           to: path.resolve(__dirname, 'public'),
         },

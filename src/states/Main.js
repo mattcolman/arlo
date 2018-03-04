@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
+import chunk from 'lodash/chunk';
+import map from 'lodash/map';
 import 'gsap';
-// import { SwipeCarousel } from 'phaser-list-view';
+import { ListView } from 'phaser-list-view';
 
 const { TweenMax, TimelineMax, Linear, PIXI } = window;
 
@@ -11,23 +13,18 @@ const Debug = {
 };
 
 export default class extends Phaser.State {
-  preload() {
-    this.load.image('shrek2', '/shrek2.jpg');
-  }
-
   create() {
     this.initSounds();
-
     window.fetch('/config.json').then(res => res.json()).then((json) => {
-      console.log('hi json', json);
+      this.config = json;
+      this.config.photos.forEach((photo, i) => {
+        this.load.image(`photo${i + 1}`, photo);
+      });
+      this.load.onLoadComplete.addOnce(() => {
+        this.createGame();
+      });
+      this.load.start();
     });
-    const main = this.add.image(0, 0, 'main');
-
-    const dvds = this.add.button(200, 190, 'sprites', this.handleDvdsClick, this, 'dvds_selected', 'dvds', 'dvds_selected', 'dvds');
-
-    const books = this.add.button(428, 338, 'sprites', this.handleBooksClick, this, 'books_selected', 'books', 'books_selected', 'books');
-
-    this.addCircles();
 
     if (Debug.config.fps) {
       this.game.time.advancedTiming = true;
@@ -42,12 +39,93 @@ export default class extends Phaser.State {
     super.create();
   }
 
-  handleBooksClick() {
+  createGame() {
+    const main = this.add.image(0, 0, 'main');
 
+    const arlo = this.add.image(this.world.centerX, this.world.height, 'arlo');
+    arlo.anchor.set(0.5, 1);
+
+    this.addPhotos();
+
+    const dvds = this.add.button(200, 190, 'sprites', this.handleDvdsClick, this, 'dvds_selected', 'dvds', 'dvds_selected', 'dvds');
+    const books = this.add.button(428, 338, 'sprites', this.handleBooksClick, this, 'books_selected', 'books', 'books_selected', 'books');
+    const toys = this.add.button(1000, 380, 'sprites', this.handleToysClick, this, 'toys_selected', 'toys', 'toys_selected', 'toys');
+  }
+
+  addPhotos() {
+    const positions = [
+      { x: 892, y: 163 },
+      { x: 1001, y: 111 },
+      { x: 1103, y: 176 },
+      { x: 1210, y: 130 },
+    ];
+
+    const maxWidth = 75;
+    const maxHeight = 92;
+    for (let i = 0; i < 4; i++) {
+      const { x, y } = positions[i];
+      const img = this.add.image(x, y, `photo${i + 1}`);
+      img.width = maxWidth;
+      img.scale.y = img.scale.x;
+      if (img.height > maxHeight) {
+        img.height = maxHeight;
+        img.scale.x = img.scale.y;
+      }
+      img.anchor.set(0.5);
+    }
+  }
+
+  handleBooksClick() {
+    this.loadImages(this.config.books);
   }
 
   handleDvdsClick() {
-    this.add.image(0, 0, 'shrek2');
+    this.loadImages(this.config.dvds);
+  }
+
+  handleToysClick() {
+    this.loadImages(this.config.toys);
+  }
+
+  loadImages(data) {
+    data.forEach((item) => {
+      this.game.load.image(item.name, item.imageUri);
+    });
+    this.game.load.onLoadComplete.addOnce(() => {
+      this.createGrid(data);
+    });
+    this.game.load.start();
+  }
+
+  createGrid(data) {
+    const maxWidth = 250;
+    const maxHeight = 250;
+    const padding = 10;
+    const numColumns = 5;
+    const rows = chunk(data, numColumns);
+    const listView = new ListView(
+      this.game,
+      this.world,
+      new Phaser.Rectangle(0, 0, this.world.width, this.world.height),
+      { padding: 20 },
+    );
+    rows.forEach((row, j) => {
+      const rowGrp = this.add.group();
+      row.forEach((dvd, i) => {
+        const img = this.add.image(i * (maxWidth + padding) + 165, 160, dvd.name, null, rowGrp);
+        img.width = maxWidth;
+        img.scale.y = img.scale.x;
+        if (img.height > maxHeight) {
+          img.height = maxHeight;
+          img.scale.x = img.scale.y;
+        }
+        img.anchor.set(0.5);
+        const tl = new TimelineMax({ delay: j * 0.5 + i * 0.1 });
+        tl.from(img, 1, { rotation: 1, y: '+=200', ease: Strong.easeOut, alpha: 0 });
+          // .from(img.scale, 1, { x: 0.5, y: 0.5, ease: Strong.easeOut }, 0);
+      });
+      listView.add(rowGrp);
+    });
   }
 
   addCircles() {
