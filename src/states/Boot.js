@@ -32,11 +32,9 @@ export default class extends Phaser.State {
 
   setupStage() {
     this.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
-    if (window.isMobile) {
-      this.scale.forceLandscape = true;
-    } else {
-      this.scale.setResizeCallback(this.scaleGame);
-    }
+    // if (window.isDesktop) {
+    this.scale.setResizeCallback(this.scaleGame);
+    // }
     this.input.maxPointers = 1;
     this.scaleGame();
 
@@ -52,12 +50,11 @@ export default class extends Phaser.State {
 
   scaleGame = () => {
     // const { offsetWidth, offsetHeight } = this.game.canvas.parentElement;
-    // const xScale = window.innerWidth / this.game.width;
-    const padding = window.isMobile ? 0 : 80;
+    const padding = window.isDesktop ? 80 : 0;
+    const xScale = window.innerWidth / this.game.width;
     const yScale = (window.innerHeight - padding) / this.game.height;
-    // const scale = Math.min(xScale, yScale);
-    const scale = Math.min(yScale, 1);
-    // console.log('scaleGame', window.innerHeight, this.game.height);
+    const scale = Math.min(xScale, yScale);
+    // console.log('scaleGame', scale);
     this.scale.setUserScale(scale, scale);
   };
 

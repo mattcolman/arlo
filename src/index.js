@@ -1,7 +1,8 @@
 import BootState from './states/Boot';
 
 function createGame() {
-  const isDesktop = true
+  const isDesktop = window.matchMedia('(min-width: 1280px)').matches;
+  window.isDesktop = isDesktop;
   const WORLD_WIDTH = isDesktop ? 1366 : 1366;
   const WORLD_HEIGHT = isDesktop ? 768 : 768;
 

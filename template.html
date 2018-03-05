@@ -31,10 +31,10 @@
             #outer {
               display: flex;
               justify-content: center;
-              width: 100vw;
-              height: 100vh;
             }
             #game {
+              width: 100vw;
+              height: 100vh;
               position: absolute;
               left: 50%;
               transform: translateX(-50%);
@@ -42,8 +42,12 @@
             @media only screen and (min-width: 1280px) {
               #outer {
                 align-items: center;
+                width: 100vw;
+                height: 100vh;
               }
               #game {
+                width: auto;
+                height: auto;
                 border: 1px solid #333;
                 position: relative;
                 left: auto;
