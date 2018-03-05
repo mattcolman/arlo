@@ -125,10 +125,10 @@ export default class extends Phaser.State {
     this.addCircles();
 
     const closeBtn = this.add.button(10, 10, 'sprites', () => {
+      TweenMax.killAll();
       TweenMax.to(this.white, 0.5, { alpha: 0 });
       TweenMax.to(this.arlo.scale, 0.5, { x: 1, y: 1, ease: Strong.easeOut });
       TweenMax.to(this.arlo, 0.5, { y: this.world.height, ease: Strong.easeOut });
-      this.circlesGrp.tl.kill();
       this.circlesGrp.destroy();
       closeBtn.destroy();
     }, this, 'closebtn', 'closebtn', 'closebtn', 'closebtn');
@@ -224,9 +224,7 @@ export default class extends Phaser.State {
     const colors = [0xf82959, 0xfb8337, 0xffe051, 0x1ad3b4, 0x01a2d9];
     const angle = Math.PI * 0.2;
     const distance = 200;
-    const tl = new TimelineMax();
     this.circlesGrp = this.add.group();
-    this.circlesGrp.tl = tl;
     for (let i = 0; i < numCircles; i++) {
       const g = this.game.add.graphics(
         685 + Math.sin(1.2 + angle * (i + 1)) * distance,
@@ -236,22 +234,32 @@ export default class extends Phaser.State {
       g.beginFill(colors[i]);
       g.drawCircle(0, 0, 30);
       g.endFill();
-      tl.add(TweenMax.to(g.scale, 0.8, {
+      g.inputEnabled = true;
+      g.events.onInputUp.add(() => {
+        TweenMax.killTweensOf(g.scale);
+        this.circlesGrp.addChild(g);
+        TweenMax.to(g, 0.5, {
+          x: this.world.centerX,
+          y: this.world.centerY,
+          width: 600,
+          height: 600,
+          ease: Strong.easeOut,
+        });
+      });
+      TweenMax.to(g.scale, 0.8, {
         x: 0.5,
         repeat: -1,
         yoyo: true,
         ease: Quad.easeInOut,
         delay: i * 0.1,
-      }));
-      tl.add(
-        TweenMax.to(g.scale, 0.8, {
-          y: 0.5,
-          repeat: -1,
-          yoyo: true,
-          ease: Quad.easeInOut,
-          delay: i * 0.1 + 0.15,
-        }), 0,
-      );
+      });
+      TweenMax.to(g.scale, 0.8, {
+        y: 0.5,
+        repeat: -1,
+        yoyo: true,
+        ease: Quad.easeInOut,
+        delay: i * 0.1 + 0.15,
+      });
     }
   }
 
