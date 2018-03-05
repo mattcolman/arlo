@@ -17,6 +17,14 @@
 	"sourceSize": {"w":99,"h":82}
 },
 {
+	"filename": "closebtn",
+	"frame": {"x":103,"y":938,"w":79,"h":74},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":79,"h":74},
+	"sourceSize": {"w":79,"h":74}
+},
+{
 	"filename": "dvds",
 	"frame": {"x":2,"y":770,"w":99,"h":115},
 	"rotated": false,
@@ -71,6 +79,6 @@
 	"format": "RGBA8888",
 	"size": {"w":1024,"h":1024},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:03dade237688fbd6163262bab693578b:b64a062082fe8cc7ba830ed75b5a309d:1eabdf11f75e3a4fe3147baf7b5be24b$"
+	"smartupdate": "$TexturePacker:SmartUpdate:b21e294e913946c6a101ac86d06434df:f6e3dddc5dfea815fd79dda7118734dd:1eabdf11f75e3a4fe3147baf7b5be24b$"
 }
 }

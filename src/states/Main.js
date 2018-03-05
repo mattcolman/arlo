@@ -14,6 +14,7 @@ const Debug = {
 
 export default class extends Phaser.State {
   create() {
+    this.cache = {};
     this.initSounds();
     window.fetch('/config.json').then(res => res.json()).then((json) => {
       this.config = json;
@@ -44,6 +45,11 @@ export default class extends Phaser.State {
 
     this.addPhotos();
 
+    this.arlo = this.add.image(this.world.centerX, this.world.height, 'arlo');
+    this.arlo.anchor.set(0.5, 1);
+    this.arlo.inputEnabled = true;
+    this.arlo.events.onInputUp.add(this.handleArloClick, this);
+
     const dvds = this.add.button(200, 190, 'sprites', this.handleDvdsClick, this, 'dvds_selected', 'dvds', 'dvds_selected', 'dvds');
     const books = this.add.button(428, 338, 'sprites', this.handleBooksClick, this, 'books_selected', 'books', 'books_selected', 'books');
     const toys = this.add.button(1000, 380, 'sprites', this.handleToysClick, this, 'toys_selected', 'toys', 'toys_selected', 'toys');
@@ -53,11 +59,6 @@ export default class extends Phaser.State {
     this.white.beginFill(0xffffff)
      .drawRect(0, 0, this.world.width, this.world.height);
     this.white.alpha = 0;
-
-    this.arlo = this.add.image(this.world.centerX, this.world.height, 'arlo');
-    this.arlo.anchor.set(0.5, 1);
-    this.arlo.inputEnabled = true;
-    this.arlo.events.onInputUp.add(this.handleArloClick, this);
   }
 
   addPhotos() {
@@ -98,10 +99,14 @@ export default class extends Phaser.State {
   }
 
   expandImage(img) {
-    const width = 600;
+    const width = this.world.width;
     const currentScale = img.scale.x;
     img.width = width;
     img.scale.y = img.scale.x;
+    if (img.height > this.world.height) {
+      img.height = this.world.height;
+      img.scale.x = img.scale.y;
+    }
     img.bringToTop();
     TweenMax.from(img.scale, 0.5, { x: currentScale, y: currentScale, ease: Strong.easeOut });
     TweenMax.to(img, 0.5, { x: this.world.centerX, y: this.world.centerY, ease: Strong.easeOut });
@@ -113,10 +118,20 @@ export default class extends Phaser.State {
   }
 
   handleArloClick() {
+    this.arlo.bringToTop();
     TweenMax.to(this.white, 0.5, { alpha: 0.5 });
     TweenMax.to(this.arlo.scale, 0.5, { x: 1.4, y: 1.4, ease: Strong.easeOut });
     TweenMax.to(this.arlo, 0.5, { y: '+=250', ease: Strong.easeOut });
     this.addCircles();
+
+    const closeBtn = this.add.button(10, 10, 'sprites', () => {
+      TweenMax.to(this.white, 0.5, { alpha: 0 });
+      TweenMax.to(this.arlo.scale, 0.5, { x: 1, y: 1, ease: Strong.easeOut });
+      TweenMax.to(this.arlo, 0.5, { y: this.world.height, ease: Strong.easeOut });
+      this.circlesGrp.tl.kill();
+      this.circlesGrp.destroy();
+      closeBtn.destroy();
+    }, this, 'closebtn', 'closebtn', 'closebtn', 'closebtn');
   }
 
   handleGlobeClick() {
@@ -124,43 +139,65 @@ export default class extends Phaser.State {
   }
 
   handleBooksClick() {
-    this.loadImages(this.config.books);
+    this.loadImages('books', this.config.books);
   }
 
   handleDvdsClick() {
-    this.loadImages(this.config.dvds);
+    this.loadImages('dvds', this.config.dvds);
   }
 
   handleToysClick() {
-    this.loadImages(this.config.toys);
+    this.loadImages('toys', this.config.toys);
   }
 
-  loadImages(data) {
-    data.forEach((item) => {
-      this.game.load.image(item.name, item.imageUri);
-    });
-    this.game.load.onLoadComplete.addOnce(() => {
+  // toggleGrid(key, data) {
+  //   if (this.viewing === key) {
+  //     this.current
+  //   }
+  // }
+
+  loadImages(cacheKey, data) {
+    if (this.cache[cacheKey]) {
       this.createGrid(data);
-    });
-    this.game.load.start();
+    } else {
+      data.forEach((item) => {
+        this.game.load.image(item.name, item.imageUri);
+      });
+      this.game.load.onLoadComplete.addOnce(() => {
+        this.cache[cacheKey] = true;
+        this.createGrid(data);
+      });
+      this.game.load.start();
+    }
   }
 
   createGrid(data) {
     const maxWidth = 250;
     const maxHeight = 250;
-    const padding = 10;
+    const padding = 0;
     const numColumns = 5;
     const rows = chunk(data, numColumns);
+    const g = this.add.graphics();
+    g.beginFill(0xffffff)
+     .drawRect(0, 0, this.world.width, this.world.height);
+    g.alpha = 0.7;
+
     const listView = new ListView(
       this.game,
       this.world,
-      new Phaser.Rectangle(0, 0, this.world.width, this.world.height),
-      { padding: 20 },
+      new Phaser.Rectangle(20, 60, this.world.width - 40, this.world.height - 60),
+      { padding: 20, searchForClicks: true },
     );
     rows.forEach((row, j) => {
       const rowGrp = this.add.group();
-      row.forEach((dvd, i) => {
-        const img = this.add.image(i * (maxWidth + padding) + 165, 160, dvd.name, null, rowGrp);
+      row.forEach((item, i) => {
+        const img = this.add.image(i * (maxWidth + padding) + 165, 160, item.name, null, rowGrp);
+        if (item.link) {
+          img.inputEnabled = true;
+          img.events.onInputUp.add(() => {
+            window.open(item.link, '_blank');
+          });
+        }
         img.width = maxWidth;
         img.scale.y = img.scale.x;
         if (img.height > maxHeight) {
@@ -174,6 +211,12 @@ export default class extends Phaser.State {
       });
       listView.add(rowGrp);
     });
+
+    const closeBtn = this.add.button(10, 10, 'sprites', () => {
+      listView.destroy();
+      g.destroy();
+      closeBtn.destroy();
+    }, this, 'closebtn', 'closebtn', 'closebtn', 'closebtn');
   }
 
   addCircles() {
@@ -181,28 +224,34 @@ export default class extends Phaser.State {
     const colors = [0xf82959, 0xfb8337, 0xffe051, 0x1ad3b4, 0x01a2d9];
     const angle = Math.PI * 0.2;
     const distance = 200;
+    const tl = new TimelineMax();
+    this.circlesGrp = this.add.group();
+    this.circlesGrp.tl = tl;
     for (let i = 0; i < numCircles; i++) {
       const g = this.game.add.graphics(
         685 + Math.sin(1.2 + angle * (i + 1)) * distance,
         320 + Math.cos(1.2 + angle * (i + 1)) * distance,
+        this.circlesGrp,
       );
       g.beginFill(colors[i]);
       g.drawCircle(0, 0, 30);
       g.endFill();
-      TweenMax.to(g.scale, 0.8, {
+      tl.add(TweenMax.to(g.scale, 0.8, {
         x: 0.5,
         repeat: -1,
         yoyo: true,
         ease: Quad.easeInOut,
         delay: i * 0.1,
-      });
-      TweenMax.to(g.scale, 0.8, {
-        y: 0.5,
-        repeat: -1,
-        yoyo: true,
-        ease: Quad.easeInOut,
-        delay: i * 0.1 + 0.15,
-      });
+      }));
+      tl.add(
+        TweenMax.to(g.scale, 0.8, {
+          y: 0.5,
+          repeat: -1,
+          yoyo: true,
+          ease: Quad.easeInOut,
+          delay: i * 0.1 + 0.15,
+        }), 0,
+      );
     }
   }
 
