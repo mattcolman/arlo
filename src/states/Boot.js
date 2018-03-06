@@ -1,6 +1,5 @@
 import ManifestLoader from 'phaser-manifest-loader';
 import Main from './Main';
-import '../../assets/fonts/panton/stylesheet.css';
 
 const { Phaser } = window;
 

@@ -1,7 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const autoprefixer = require('autoprefixer');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -58,26 +57,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         use: 'babel-loader',
-        include: [path.resolve(__dirname, 'src'), path.resolve(__dirname, 'node_modules/fp-api')],
-      },
-      {
-        test: /\.less$/,
-        use: [
-          {
-            loader: 'style-loader',
-            options: {
-              plugins() {
-                return [autoprefixer];
-              },
-            },
-          },
-          {
-            loader: 'css-loader',
-          },
-          {
-            loader: 'less-loader',
-          },
-        ],
+        include: [path.resolve(__dirname, 'src')],
       },
       {
         test: /\.css$/,
