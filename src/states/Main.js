@@ -45,10 +45,12 @@ export default class extends Phaser.State {
 
     this.addPhotos();
 
-    this.arlo = this.add.image(this.world.centerX, this.world.height, 'arlo');
-    this.arlo.anchor.set(0.5, 1);
-    this.arlo.inputEnabled = true;
-    this.arlo.events.onInputUp.add(this.handleArloClick, this);
+    this.arlo = this.add.group();
+    this.arlo.position.set(this.world.centerX, this.world.height);
+    const head = this.add.image(0, 0, 'arlo', null, this.arlo);
+    head.anchor.set(0.5, 1);
+    head.inputEnabled = true;
+    head.events.onInputUp.add(this.handleArloClick, this);
 
     const dvds = this.add.button(200, 190, 'sprites', this.handleDvdsClick, this, 'dvds_selected', 'dvds', 'dvds_selected', 'dvds');
     const books = this.add.button(428, 338, 'sprites', this.handleBooksClick, this, 'books_selected', 'books', 'books_selected', 'books');
@@ -118,7 +120,9 @@ export default class extends Phaser.State {
   }
 
   handleArloClick() {
-    this.arlo.bringToTop();
+    this.world.addChild(this.arlo);
+    const arloHeadLookUp = this.add.image(-110, -590, 'arlo-look-up', null, this.arlo);
+    TweenMax.from(arloHeadLookUp, 0.5, { alpha: 0, ease: Strong.easeOut });
     TweenMax.to(this.white, 0.5, { alpha: 0.5 });
     TweenMax.to(this.arlo.scale, 0.5, { x: 1.4, y: 1.4, ease: Strong.easeOut });
     TweenMax.to(this.arlo, 0.5, { y: '+=250', ease: Strong.easeOut });
@@ -130,12 +134,13 @@ export default class extends Phaser.State {
       TweenMax.to(this.arlo.scale, 0.5, { x: 1, y: 1, ease: Strong.easeOut });
       TweenMax.to(this.arlo, 0.5, { y: this.world.height, ease: Strong.easeOut });
       this.circlesGrp.destroy();
+      this.arlo.removeChild(arloHeadLookUp);
       closeBtn.destroy();
     }, this, 'closebtn', 'closebtn', 'closebtn', 'closebtn');
   }
 
   handleGlobeClick() {
-
+    this.loadImages('places_visited', this.config.places_visited);
   }
 
   handleBooksClick() {
@@ -172,9 +177,9 @@ export default class extends Phaser.State {
   }
 
   createGrid(data) {
-    const maxWidth = 250;
-    const maxHeight = 250;
-    const padding = 0;
+    const maxWidth = 230;
+    const maxHeight = 230;
+    const padding = 20;
     const numColumns = 5;
     const rows = chunk(data, numColumns);
     const g = this.add.graphics();
@@ -227,8 +232,8 @@ export default class extends Phaser.State {
     this.circlesGrp = this.add.group();
     for (let i = 0; i < numCircles; i++) {
       const g = this.game.add.graphics(
-        685 + Math.sin(1.2 + angle * (i + 1)) * distance,
-        320 + Math.cos(1.2 + angle * (i + 1)) * distance,
+        685 + Math.sin(1.2 + angle * (numCircles - i)) * distance,
+        320 + Math.cos(1.2 + angle * (numCircles - i)) * distance,
         this.circlesGrp,
       );
       g.beginFill(colors[i]);
@@ -245,6 +250,14 @@ export default class extends Phaser.State {
           height: 600,
           ease: Strong.easeOut,
         });
+        // add text
+        const thought = this.config.thoughts[i];
+        if (thought) {
+          const title = this.add.bitmapText(this.world.centerX, 150, 'arnold', thought.title.toUpperCase(), 40, this.circlesGrp);
+          title.anchor.x = 0.5;
+          const body = this.add.bitmapText(this.world.centerX, 200, 'arnold', thought.body.toUpperCase(), 30, this.circlesGrp);
+          body.anchor.x = 0.5;
+        }
       });
       TweenMax.to(g.scale, 0.8, {
         x: 0.5,

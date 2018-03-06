@@ -10,13 +10,13 @@ const MANIFEST = {
   audio: [
   ],
   spritesheets: ['sprites'],
-  images: ['main', 'arlo'],
-  bitmap_fonts: [],
-  fonts: {
-    custom: {
-      families: ['panton_extraboldregular'],
-    },
-  },
+  images: ['main', 'arlo', 'arlo-look-up'],
+  bitmap_fonts: ['arnold'],
+  // fonts: {
+  //   custom: {
+  //     families: ['panton_extraboldregular'],
+  //   },
+  // },
 };
 
 export default class extends Phaser.State {
