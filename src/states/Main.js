@@ -52,7 +52,7 @@ export default class extends Phaser.State {
     head.inputEnabled = true;
     head.events.onInputUp.add(this.handleArloClick, this);
 
-    const dvds = this.add.button(200, 190, 'sprites', this.handleDvdsClick, this, 'dvds_selected', 'dvds', 'dvds_selected', 'dvds');
+    this.dvds = this.add.button(200, 190, 'sprites', this.handleDvdsClick, this, 'dvds_selected', 'dvds', 'dvds_selected', 'dvds');
     const books = this.add.button(428, 338, 'sprites', this.handleBooksClick, this, 'books_selected', 'books', 'books_selected', 'books');
     const toys = this.add.button(1000, 380, 'sprites', this.handleToysClick, this, 'toys_selected', 'toys', 'toys_selected', 'toys');
     const globe = this.add.button(200, 430, 'sprites', this.handleGlobeClick, this, 'globe_selected', 'globe', 'globe_selected', 'globe');
@@ -120,6 +120,7 @@ export default class extends Phaser.State {
   }
 
   handleArloClick() {
+    if (this.circlesGrp) return;
     this.world.addChild(this.arlo);
     const arloHeadLookUp = this.add.image(-110, -590, 'arlo-look-up', null, this.arlo);
     TweenMax.from(arloHeadLookUp, 0.5, { alpha: 0, ease: Strong.easeOut });
@@ -129,11 +130,14 @@ export default class extends Phaser.State {
     this.addCircles();
 
     const closeBtn = this.add.button(10, 10, 'sprites', () => {
+      const index = this.world.getChildIndex(this.dvds);
+      this.world.setChildIndex(this.arlo, index);
       TweenMax.killAll();
       TweenMax.to(this.white, 0.5, { alpha: 0 });
       TweenMax.to(this.arlo.scale, 0.5, { x: 1, y: 1, ease: Strong.easeOut });
       TweenMax.to(this.arlo, 0.5, { y: this.world.height, ease: Strong.easeOut });
       this.circlesGrp.destroy();
+      this.circlesGrp = null;
       this.arlo.removeChild(arloHeadLookUp);
       closeBtn.destroy();
     }, this, 'closebtn', 'closebtn', 'closebtn', 'closebtn');
@@ -154,12 +158,6 @@ export default class extends Phaser.State {
   handleToysClick() {
     this.loadImages('toys', this.config.toys);
   }
-
-  // toggleGrid(key, data) {
-  //   if (this.viewing === key) {
-  //     this.current
-  //   }
-  // }
 
   loadImages(cacheKey, data) {
     if (this.cache[cacheKey]) {
@@ -231,49 +229,90 @@ export default class extends Phaser.State {
     const distance = 200;
     this.circlesGrp = this.add.group();
     for (let i = 0; i < numCircles; i++) {
-      const g = this.game.add.graphics(
+      const grp = this.add.group(this.circlesGrp);
+      grp.position.set(
         685 + Math.sin(1.2 + angle * (numCircles - i)) * distance,
         320 + Math.cos(1.2 + angle * (numCircles - i)) * distance,
-        this.circlesGrp,
       );
+      grp.data = {
+        orgX: grp.x,
+        orgY: grp.y,
+      };
+      grp.scale.set(0.1);
+      const g = this.game.add.graphics(0, 0, grp);
       g.beginFill(colors[i]);
-      g.drawCircle(0, 0, 30);
+      g.drawCircle(0, 0, 600);
       g.endFill();
       g.inputEnabled = true;
       g.events.onInputUp.add(() => {
-        TweenMax.killTweensOf(g.scale);
-        this.circlesGrp.addChild(g);
-        TweenMax.to(g, 0.5, {
-          x: this.world.centerX,
-          y: this.world.centerY,
-          width: 600,
-          height: 600,
-          ease: Strong.easeOut,
-        });
-        // add text
-        const thought = this.config.thoughts[i];
-        if (thought) {
-          const title = this.add.bitmapText(this.world.centerX, 150, 'arnold', thought.title.toUpperCase(), 40, this.circlesGrp);
-          title.anchor.x = 0.5;
-          const body = this.add.bitmapText(this.world.centerX, 200, 'arnold', thought.body.toUpperCase(), 30, this.circlesGrp);
-          body.anchor.x = 0.5;
-        }
+        this.handleThoughtClicked(grp, this.config.thoughts[i]);
       });
       TweenMax.to(g.scale, 0.8, {
-        x: 0.5,
+        x: 0.9,
         repeat: -1,
         yoyo: true,
         ease: Quad.easeInOut,
         delay: i * 0.1,
       });
       TweenMax.to(g.scale, 0.8, {
-        y: 0.5,
+        y: 0.9,
         repeat: -1,
         yoyo: true,
         ease: Quad.easeInOut,
         delay: i * 0.1 + 0.15,
       });
     }
+  }
+
+  handleThoughtClicked(grp, thought) {
+    if (!thought) return;
+    if (grp.scale.x === 1) {
+      this.contractThought(grp);
+    } else {
+      this.expandThought(grp, thought);
+    }
+  }
+
+  expandThought(grp, thought) {
+    TweenMax.killTweensOf(grp.scale);
+    this.circlesGrp.addChild(grp);
+    TweenMax.to(grp, 0.5, {
+      x: this.world.centerX,
+      y: this.world.centerY,
+      ease: Strong.easeOut,
+    });
+    TweenMax.to(grp.scale, 0.5, {
+      x: 1,
+      y: 1,
+      ease: Strong.easeOut,
+    });
+    const title = this.add.bitmapText(0, -200, 'arnold', thought.title.toUpperCase(), 50, grp);
+    title.maxWidth = 350;
+    title.align = 'center';
+    title.anchor.x = 0.5;
+    if (thought.imageUri) {
+      this.load.image(thought.title, thought.imageUri);
+      this.load.onLoadComplete.addOnce(() => {
+        const img = this.add.image(0, 0, thought.title, null, grp);
+        img.anchor.set(0.5);
+        img.width = 280;
+        img.scale.y = img.scale.x;
+      });
+      this.load.start();
+    } else {
+      const body = this.add.bitmapText(0, title.y + title.height + 50, 'arnold', thought.body.toUpperCase(), 40, grp);
+      body.maxWidth = 350;
+      body.align = 'center';
+      body.anchor.x = 0.5;
+    }
+  }
+
+  contractThought(grp) {
+    const { orgX, orgY } = grp.data;
+    grp.removeChildAt(2);
+    grp.removeChildAt(1);
+    TweenMax.to(grp.scale, 0.5, { x: 0.1, y: 0.1, ease: Strong.easeOut });
+    TweenMax.to(grp, 0.5, { x: orgX, y: orgY, ease: Strong.easeOut });
   }
 
   initSounds() {
