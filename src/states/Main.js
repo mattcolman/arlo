@@ -15,17 +15,9 @@ const Debug = {
 export default class extends Phaser.State {
   create() {
     this.cache = {};
+    this.config = this.game.config;
     this.initSounds();
-    window.fetch('/config.json').then(res => res.json()).then((json) => {
-      this.config = json;
-      this.config.photos.forEach((photo, i) => {
-        this.load.image(`photo${i + 1}`, photo);
-      });
-      this.load.onLoadComplete.addOnce(() => {
-        this.createGame();
-      });
-      this.load.start();
-    });
+    this.createGame();
 
     if (Debug.config.fps) {
       this.game.time.advancedTiming = true;

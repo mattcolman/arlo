@@ -27,10 +27,28 @@ export default class extends Phaser.State {
       images: ['spinner'],
     }).then(() => {
       this.showLoader();
-      loader.loadManifest(MANIFEST).then(() => {
+      Promise.all([
+        loader.loadManifest(MANIFEST),
+        this.loadConfig(),
+      ]).then(() => {
         TweenMax.killTweensOf(this.spinner);
         this.spinner.destroy();
         this.startGame();
+      });
+    });
+  }
+
+  loadConfig() {
+    return new Promise((resolve) => {
+      window.fetch('/config.json').then(res => res.json()).then((json) => {
+        this.game.config = json;
+        this.game.config.photos.forEach((photo, i) => {
+          this.load.image(`photo${i + 1}`, photo);
+        });
+        this.load.onLoadComplete.addOnce(() => {
+          resolve();
+        });
+        this.load.start();
       });
     });
   }
