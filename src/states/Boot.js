@@ -20,13 +20,25 @@ const MANIFEST = {
 
 export default class extends Phaser.State {
   create() {
+    this.setupStage();
+    this.addStates();
     const loader = this.game.plugins.add(ManifestLoader, req);
-    loader.loadManifest(MANIFEST).then(() => {
-      console.log('loaded!');
-      this.setupStage();
-      this.addStates();
-      this.startGame();
+    loader.loadManifest({
+      images: ['spinner'],
+    }).then(() => {
+      this.showLoader();
+      loader.loadManifest(MANIFEST).then(() => {
+        TweenMax.killTweensOf(this.spinner);
+        this.spinner.destroy();
+        this.startGame();
+      });
     });
+  }
+
+  showLoader() {
+    this.spinner = this.add.image(this.world.centerX, this.world.centerY, 'spinner');
+    this.spinner.anchor.set(0.5);
+    TweenMax.to(this.spinner, 2, { angle: 360, repeat: -1, ease: Linear.easeNone });
   }
 
   setupStage() {

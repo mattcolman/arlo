@@ -160,66 +160,88 @@ export default class extends Phaser.State {
   }
 
   loadImages(cacheKey, data) {
-    if (this.cache[cacheKey]) {
-      this.createGrid(data);
-    } else {
-      data.forEach((item) => {
-        this.game.load.image(item.name, item.imageUri);
-      });
-      this.game.load.onLoadComplete.addOnce(() => {
-        this.cache[cacheKey] = true;
-        this.createGrid(data);
-      });
-      this.game.load.start();
-    }
+    const maxWidth = 230;
+    const maxHeight = 230;
+
+    const g = this.add.graphics();
+    g.beginFill(0xffffff)
+     .drawRect(0, 0, this.world.width, this.world.height);
+    g.alpha = 0.7;
+    const groups = this.createGridItems(data);
+
+    const closeBtn = this.add.button(10, 10, 'sprites', () => {
+      this.game.load.onFileComplete.removeAll();
+      this.listView.destroy();
+      g.destroy();
+      closeBtn.destroy();
+    }, this, 'closebtn', 'closebtn', 'closebtn', 'closebtn');
+
+    data.forEach((item) => {
+      this.game.load.image(item.name, item.imageUri);
+    });
+    this.game.load.onFileComplete.add((progress, fileKey, success, totalLoaded, totalFiles) => {
+      const grp = groups.find(_grp => _grp.item.name === fileKey);
+      // remove placeholder loader and replace with image
+      grp.removeAll();
+      const item = grp.item;
+      const img = this.add.image(0, 0, fileKey, null, grp);
+      if (item.link) {
+        img.inputEnabled = true;
+        img.events.onInputUp.add(() => {
+          window.open(item.link, '_blank');
+        });
+      }
+      img.width = maxWidth;
+      img.scale.y = img.scale.x;
+      if (img.height > maxHeight) {
+        img.height = maxHeight;
+        img.scale.x = img.scale.y;
+      }
+      img.anchor.set(0.5);
+      const tl = new TimelineMax();
+      tl.from(img, 0.8, { rotation: 1, y: '+=200', ease: Strong.easeOut, alpha: 0 });
+    });
+    this.game.load.start();
   }
 
-  createGrid(data) {
+  createGridItems(data) {
     const maxWidth = 230;
     const maxHeight = 230;
     const padding = 20;
     const numColumns = 5;
     const rows = chunk(data, numColumns);
-    const g = this.add.graphics();
-    g.beginFill(0xffffff)
-     .drawRect(0, 0, this.world.width, this.world.height);
-    g.alpha = 0.7;
-
-    const listView = new ListView(
+    const items = [];
+    this.listView = new ListView(
       this.game,
       this.world,
       new Phaser.Rectangle(20, 60, this.world.width - 40, this.world.height - 60),
       { padding: 20, searchForClicks: true },
     );
-    rows.forEach((row, j) => {
+    rows.forEach((row) => {
       const rowGrp = this.add.group();
       row.forEach((item, i) => {
-        const img = this.add.image(i * (maxWidth + padding) + 165, 160, item.name, null, rowGrp);
-        if (item.link) {
-          img.inputEnabled = true;
-          img.events.onInputUp.add(() => {
-            window.open(item.link, '_blank');
-          });
-        }
-        img.width = maxWidth;
-        img.scale.y = img.scale.x;
-        if (img.height > maxHeight) {
-          img.height = maxHeight;
-          img.scale.x = img.scale.y;
-        }
-        img.anchor.set(0.5);
-        const tl = new TimelineMax({ delay: j * 0.5 + i * 0.1 });
-        tl.from(img, 0.8, { rotation: 1, y: '+=200', ease: Strong.easeOut, alpha: 0 });
-          // .from(img.scale, 1, { x: 0.5, y: 0.5, ease: Strong.easeOut }, 0);
+        const grp = this.add.group(rowGrp);
+        grp.position.set(i * (maxWidth + padding) + 165, 160);
+        grp.item = item;
+        items.push(grp);
+
+        // show placeholder loader
+        const g = this.game.add.graphics(0, 0, grp);
+        g.beginFill(0x333333)
+         .drawRect(0, 0, maxWidth, maxHeight);
+        g.pivot.set(maxWidth / 2, maxHeight / 2);
+        g.alpha = 0.1;
+
+        const spinner = this.game.add.image(0, 0, 'spinner', null, grp);
+        spinner.anchor.set(0.5);
+        spinner.width = 50;
+        spinner.scale.y = spinner.scale.x;
+        TweenMax.to(spinner, 2, { angle: 360, repeat: -1, ease: Linear.easeNone });
       });
-      listView.add(rowGrp);
+      this.listView.add(rowGrp);
     });
 
-    const closeBtn = this.add.button(10, 10, 'sprites', () => {
-      listView.destroy();
-      g.destroy();
-      closeBtn.destroy();
-    }, this, 'closebtn', 'closebtn', 'closebtn', 'closebtn');
+    return items;
   }
 
   addCircles() {
