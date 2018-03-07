@@ -190,8 +190,7 @@ export default class extends Phaser.State {
         img.scale.x = img.scale.y;
       }
       img.anchor.set(0.5);
-      const tl = new TimelineMax();
-      tl.from(img, 0.8, { rotation: 1, y: '+=200', ease: Strong.easeOut, alpha: 0 });
+      TweenMax.from(img, 0.8, { alpha: 0 });
     });
     this.game.load.start();
   }
@@ -209,13 +208,14 @@ export default class extends Phaser.State {
       new Phaser.Rectangle(20, 60, this.world.width - 40, this.world.height - 60),
       { padding: 20, searchForClicks: true },
     );
-    rows.forEach((row) => {
+    rows.forEach((row, j) => {
       const rowGrp = this.add.group();
       row.forEach((item, i) => {
         const grp = this.add.group(rowGrp);
         grp.position.set(i * (maxWidth + padding) + 165, 160);
         grp.item = item;
         items.push(grp);
+        TweenMax.from(grp, 0.5, { delay: i * 0.1 + j * 0.5, angle: 60, y: '+=200', ease: Strong.easeOut, alpha: 0 });
 
         // show placeholder loader
         const g = this.game.add.graphics(0, 0, grp);
