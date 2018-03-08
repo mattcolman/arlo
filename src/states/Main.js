@@ -13,10 +13,13 @@ const Debug = {
 };
 
 export default class extends Phaser.State {
+
+  isThoughtTweening = false;
+
   create() {
     this.cache = {};
     this.config = this.game.config;
-    this.initSounds();
+    // this.initSounds();
     this.createGame();
 
     if (Debug.config.fps) {
@@ -33,7 +36,7 @@ export default class extends Phaser.State {
   }
 
   createGame() {
-    const main = this.add.image(0, 0, 'main');
+    this.add.image(0, 0, 'main');
 
     this.addPhotos();
 
@@ -85,6 +88,7 @@ export default class extends Phaser.State {
   }
 
   toggleImageClick(img) {
+    this.game.add.audio('click_slip').play();
     if (img.width === img.data.orgWidth) {
       this.expandImage(img);
     } else {
@@ -113,6 +117,7 @@ export default class extends Phaser.State {
 
   handleArloClick() {
     if (this.circlesGrp) return;
+    this.game.add.audio('blup').play();
     this.world.addChild(this.arlo);
     const arloHeadLookUp = this.add.image(-110, -590, 'arlo-look-up', null, this.arlo);
     TweenMax.from(arloHeadLookUp, 0.5, { alpha: 0, ease: Strong.easeOut });
@@ -122,6 +127,7 @@ export default class extends Phaser.State {
     this.addCircles();
 
     const closeBtn = this.add.button(10, 10, 'sprites', () => {
+      this.game.add.audio('fart').play();
       const index = this.world.getChildIndex(this.dvds);
       this.world.setChildIndex(this.arlo, index);
       TweenMax.killAll();
@@ -152,6 +158,7 @@ export default class extends Phaser.State {
   }
 
   loadImages(cacheKey, data) {
+    this.game.add.audio('blup').play();
     const maxWidth = 230;
     const maxHeight = 230;
 
@@ -162,6 +169,7 @@ export default class extends Phaser.State {
     const groups = this.createGridItems(data);
 
     const closeBtn = this.add.button(10, 10, 'sprites', () => {
+      this.game.add.audio('fart').play();
       this.game.load.onFileComplete.removeAll();
       this.listView.destroy();
       g.destroy();
@@ -279,7 +287,8 @@ export default class extends Phaser.State {
   }
 
   handleThoughtClicked(grp, thought) {
-    if (!thought) return;
+    if (!thought || this.isThoughtTweening) return;
+    this.game.add.audio('blop').play();
     if (grp.scale.x === 1) {
       this.contractThought(grp);
     } else {
@@ -288,6 +297,7 @@ export default class extends Phaser.State {
   }
 
   expandThought(grp, thought) {
+    this.isThoughtTweening = true;
     TweenMax.killTweensOf(grp.scale);
     this.circlesGrp.addChild(grp);
     TweenMax.to(grp, 0.5, {
@@ -299,6 +309,8 @@ export default class extends Phaser.State {
       x: 1,
       y: 1,
       ease: Strong.easeOut,
+      onComplete: this.handleThoughtAnimationComplete,
+      onCompleteScope: this,
     });
     const title = this.add.bitmapText(0, -200, 'arnold', thought.title.toUpperCase(), 50, grp);
     title.maxWidth = 350;
@@ -323,10 +335,15 @@ export default class extends Phaser.State {
 
   contractThought(grp) {
     const { orgX, orgY } = grp.data;
+    this.isThoughtTweening = true;
     grp.removeChildAt(2);
     grp.removeChildAt(1);
     TweenMax.to(grp.scale, 0.5, { x: 0.1, y: 0.1, ease: Strong.easeOut });
-    TweenMax.to(grp, 0.5, { x: orgX, y: orgY, ease: Strong.easeOut });
+    TweenMax.to(grp, 0.5, { x: orgX, y: orgY, ease: Strong.easeOut, onComplete: this.handleThoughtAnimationComplete, onCompleteScope: this });
+  }
+
+  handleThoughtAnimationComplete() {
+    this.isThoughtTweening = false;
   }
 
   initSounds() {

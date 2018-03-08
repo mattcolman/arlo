@@ -7,6 +7,10 @@ const req = require.context('../../assets', true, /.*\.png|json|ttf|woff|woff2|x
 
 const MANIFEST = {
   audio: [
+    'fart',
+    'blup',
+    'blop',
+    'click_slip',
   ],
   spritesheets: ['sprites'],
   images: ['main', 'arlo', 'arlo-look-up'],
