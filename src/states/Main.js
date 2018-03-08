@@ -335,9 +335,11 @@ export default class extends Phaser.State {
 
   contractThought(grp) {
     const { orgX, orgY } = grp.data;
+    this.load.onLoadComplete.removeAll();
     this.isThoughtTweening = true;
-    grp.removeChildAt(2);
-    grp.removeChildAt(1);
+    while (grp.children.length > 1) {
+      grp.removeChildAt(1);
+    }
     TweenMax.to(grp.scale, 0.5, { x: 0.1, y: 0.1, ease: Strong.easeOut });
     TweenMax.to(grp, 0.5, { x: orgX, y: orgY, ease: Strong.easeOut, onComplete: this.handleThoughtAnimationComplete, onCompleteScope: this });
   }
