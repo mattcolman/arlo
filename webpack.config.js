@@ -17,7 +17,10 @@ module.exports = {
     new CopyWebpackPlugin(
       [
         {
-          from: path.resolve(__dirname, 'node_modules/phaser/build/phaser.min.js'),
+          from: path.resolve(
+            __dirname,
+            'node_modules/phaser/build/phaser.min.js',
+          ),
           to: path.resolve(__dirname, 'public'),
         },
       ],
@@ -29,8 +32,10 @@ module.exports = {
       },
     }),
     new webpack.ProvidePlugin({
-      Promise: 'imports-loader?this=>global!exports-loader?global.Promise!es6-promise',
-      fetch: 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch',
+      Promise:
+        'imports-loader?this=>global!exports-loader?global.Promise!es6-promise',
+      fetch:
+        'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch',
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
@@ -92,6 +97,7 @@ module.exports = {
               gifsicle: {
                 interlaced: false,
               },
+              name: '[name]-[hash].[ext]',
             },
           },
         ],
@@ -100,9 +106,12 @@ module.exports = {
         test: /\.jpg$/,
         use: [
           {
-            loader: 'url-loader?hash=sha512&digest=hex&name=[name]-[hash].[ext]',
+            loader: 'url-loader',
             options: {
               limit: 25000,
+              hash: 'sha512',
+              digest: 'hex',
+              name: '[name]-[hash].[ext]',
             },
           },
         ],
