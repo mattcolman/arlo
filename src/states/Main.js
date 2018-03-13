@@ -13,7 +13,6 @@ const Debug = {
 };
 
 export default class extends Phaser.State {
-
   isThoughtTweening = false;
 
   create() {
@@ -36,6 +35,7 @@ export default class extends Phaser.State {
   }
 
   createGame() {
+    this.addBackground();
     this.add.image(0, 0, 'main');
 
     this.addPhotos();
@@ -47,15 +47,104 @@ export default class extends Phaser.State {
     head.inputEnabled = true;
     head.events.onInputUp.add(this.handleArloClick, this);
 
-    this.dvds = this.add.button(200, 190, 'sprites', this.handleDvdsClick, this, 'dvds_selected', 'dvds', 'dvds_selected', 'dvds');
-    const books = this.add.button(428, 338, 'sprites', this.handleBooksClick, this, 'books_selected', 'books', 'books_selected', 'books');
-    const toys = this.add.button(1000, 380, 'sprites', this.handleToysClick, this, 'toys_selected', 'toys', 'toys_selected', 'toys');
-    const globe = this.add.button(200, 430, 'sprites', this.handleGlobeClick, this, 'globe_selected', 'globe', 'globe_selected', 'globe');
+    this.dvds = this.add.button(
+      200,
+      190,
+      'sprites',
+      this.handleDvdsClick,
+      this,
+      'dvds_selected',
+      'dvds',
+      'dvds_selected',
+      'dvds',
+    );
+    const clock = this.addClock(this.world, 478, 250);
+    const books = this.add.button(
+      428,
+      338,
+      'sprites',
+      this.handleBooksClick,
+      this,
+      'books_selected',
+      'books',
+      'books_selected',
+      'books',
+    );
+    const toys = this.add.button(
+      1000,
+      380,
+      'sprites',
+      this.handleToysClick,
+      this,
+      'toys_selected',
+      'toys',
+      'toys_selected',
+      'toys',
+    );
+    const globe = this.add.button(
+      200,
+      430,
+      'sprites',
+      this.handleGlobeClick,
+      this,
+      'globe_selected',
+      'globe',
+      'globe_selected',
+      'globe',
+    );
 
     this.white = this.add.graphics();
-    this.white.beginFill(0xffffff)
-     .drawRect(0, 0, this.world.width, this.world.height);
+    this.white
+      .beginFill(0xffffff)
+      .drawRect(0, 0, this.world.width, this.world.height);
     this.white.alpha = 0;
+  }
+
+  addClock(parent, x, y) {
+    const grp = this.add.group();
+    grp.position.set(x, y);
+    const clock = this.add.image(0, 0, 'sprites', 'clock', grp);
+    clock.anchor.set(0.5);
+
+    const minuteHand = this.add.image(0, 0, 'sprites', 'clockhand', grp);
+    minuteHand.anchor.set(0.5, 1);
+
+    const hourHand = this.add.image(0, 0, 'sprites', 'clockhand', grp);
+    hourHand.anchor.set(0.5, 1);
+    hourHand.scale.y = 0.5;
+
+    const d = new Date();
+    const setTime = () => {
+      const hours = d.getHours();
+      const minutes = d.getMinutes();
+      hourHand.angle = 360 / 12 * (hours % 12);
+      minuteHand.angle = 360 / 60 * minutes;
+    };
+    setTime();
+    setTimeout(setTime, 1000 * 60);
+  }
+
+  addBackground() {
+    const wallpaperGrp = this.game.add.group();
+    this.load.image('wallpaper', this.config.wallpaper);
+    this.load.onLoadComplete.addOnce(() => {
+      this.game.add.tileSprite(
+        0,
+        0,
+        this.world.width,
+        this.world.height - 200,
+        'wallpaper',
+        null,
+        wallpaperGrp,
+      );
+    });
+    this.load.start();
+
+    const g = this.game.add.graphics();
+    g
+      .beginFill(Phaser.Color.hexToRGB(this.config.floor_color))
+      .drawRect(0, this.world.height - 200, this.world.width, 200)
+      .endFill();
   }
 
   addPhotos() {
@@ -106,39 +195,72 @@ export default class extends Phaser.State {
       img.scale.x = img.scale.y;
     }
     img.bringToTop();
-    TweenMax.from(img.scale, 0.5, { x: currentScale, y: currentScale, ease: Strong.easeOut });
-    TweenMax.to(img, 0.5, { x: this.world.centerX, y: this.world.centerY, ease: Strong.easeOut });
+    TweenMax.from(img.scale, 0.5, {
+      x: currentScale,
+      y: currentScale,
+      ease: Strong.easeOut,
+    });
+    TweenMax.to(img, 0.5, {
+      x: this.world.centerX,
+      y: this.world.centerY,
+      ease: Strong.easeOut,
+    });
   }
 
   contractImage(img) {
     const { orgX, orgY, orgWidth, orgHeight } = img.data;
-    TweenMax.to(img, 0.5, { x: orgX, y: orgY, width: orgWidth, height: orgHeight, ease: Strong.easeOut });
+    TweenMax.to(img, 0.5, {
+      x: orgX,
+      y: orgY,
+      width: orgWidth,
+      height: orgHeight,
+      ease: Strong.easeOut,
+    });
   }
 
   handleArloClick() {
     if (this.circlesGrp) return;
     this.game.add.audio('blup').play();
     this.world.addChild(this.arlo);
-    const arloHeadLookUp = this.add.image(-110, -590, 'arlo-look-up', null, this.arlo);
+    const arloHeadLookUp = this.add.image(
+      -110,
+      -590,
+      'arlo-look-up',
+      null,
+      this.arlo,
+    );
     TweenMax.from(arloHeadLookUp, 0.5, { alpha: 0, ease: Strong.easeOut });
     TweenMax.to(this.white, 0.5, { alpha: 0.5 });
     TweenMax.to(this.arlo.scale, 0.5, { x: 1.4, y: 1.4, ease: Strong.easeOut });
     TweenMax.to(this.arlo, 0.5, { y: '+=250', ease: Strong.easeOut });
     this.addCircles();
 
-    const closeBtn = this.add.button(10, 10, 'sprites', () => {
-      this.game.add.audio('fart').play();
-      const index = this.world.getChildIndex(this.dvds);
-      this.world.setChildIndex(this.arlo, index);
-      TweenMax.killAll();
-      TweenMax.to(this.white, 0.5, { alpha: 0 });
-      TweenMax.to(this.arlo.scale, 0.5, { x: 1, y: 1, ease: Strong.easeOut });
-      TweenMax.to(this.arlo, 0.5, { y: this.world.height, ease: Strong.easeOut });
-      this.circlesGrp.destroy();
-      this.circlesGrp = null;
-      this.arlo.removeChild(arloHeadLookUp);
-      closeBtn.destroy();
-    }, this, 'closebtn', 'closebtn', 'closebtn', 'closebtn');
+    const closeBtn = this.add.button(
+      10,
+      10,
+      'sprites',
+      () => {
+        this.game.add.audio('fart').play();
+        const index = this.world.getChildIndex(this.dvds);
+        this.world.setChildIndex(this.arlo, index);
+        TweenMax.killAll();
+        TweenMax.to(this.white, 0.5, { alpha: 0 });
+        TweenMax.to(this.arlo.scale, 0.5, { x: 1, y: 1, ease: Strong.easeOut });
+        TweenMax.to(this.arlo, 0.5, {
+          y: this.world.height,
+          ease: Strong.easeOut,
+        });
+        this.circlesGrp.destroy();
+        this.circlesGrp = null;
+        this.arlo.removeChild(arloHeadLookUp);
+        closeBtn.destroy();
+      },
+      this,
+      'closebtn',
+      'closebtn',
+      'closebtn',
+      'closebtn',
+    );
   }
 
   handleGlobeClick() {
@@ -163,43 +285,54 @@ export default class extends Phaser.State {
     const maxHeight = 230;
 
     const g = this.add.graphics();
-    g.beginFill(0xffffff)
-     .drawRect(0, 0, this.world.width, this.world.height);
+    g.beginFill(0xffffff).drawRect(0, 0, this.world.width, this.world.height);
     g.alpha = 0.7;
     const groups = this.createGridItems(data);
 
-    const closeBtn = this.add.button(10, 10, 'sprites', () => {
-      this.game.add.audio('fart').play();
-      this.game.load.onFileComplete.removeAll();
-      this.listView.destroy();
-      g.destroy();
-      closeBtn.destroy();
-    }, this, 'closebtn', 'closebtn', 'closebtn', 'closebtn');
+    const closeBtn = this.add.button(
+      10,
+      10,
+      'sprites',
+      () => {
+        this.game.add.audio('fart').play();
+        this.game.load.onFileComplete.removeAll();
+        this.listView.destroy();
+        g.destroy();
+        closeBtn.destroy();
+      },
+      this,
+      'closebtn',
+      'closebtn',
+      'closebtn',
+      'closebtn',
+    );
 
     data.forEach((item) => {
       this.game.load.image(item.name, item.imageUri);
     });
-    this.game.load.onFileComplete.add((progress, fileKey, success, totalLoaded, totalFiles) => {
-      const grp = groups.find(_grp => _grp.item.name === fileKey);
-      // remove placeholder loader and replace with image
-      grp.removeAll();
-      const item = grp.item;
-      const img = this.add.image(0, 0, fileKey, null, grp);
-      if (item.link) {
-        img.inputEnabled = true;
-        img.events.onInputUp.add(() => {
-          window.open(item.link, '_blank');
-        });
-      }
-      img.width = maxWidth;
-      img.scale.y = img.scale.x;
-      if (img.height > maxHeight) {
-        img.height = maxHeight;
-        img.scale.x = img.scale.y;
-      }
-      img.anchor.set(0.5);
-      TweenMax.from(img, 0.8, { alpha: 0 });
-    });
+    this.game.load.onFileComplete.add(
+      (progress, fileKey, success, totalLoaded, totalFiles) => {
+        const grp = groups.find(_grp => _grp.item.name === fileKey);
+        // remove placeholder loader and replace with image
+        grp.removeAll();
+        const item = grp.item;
+        const img = this.add.image(0, 0, fileKey, null, grp);
+        if (item.link) {
+          img.inputEnabled = true;
+          img.events.onInputUp.add(() => {
+            window.open(item.link, '_blank');
+          });
+        }
+        img.width = maxWidth;
+        img.scale.y = img.scale.x;
+        if (img.height > maxHeight) {
+          img.height = maxHeight;
+          img.scale.x = img.scale.y;
+        }
+        img.anchor.set(0.5);
+        TweenMax.from(img, 0.8, { alpha: 0 });
+      },
+    );
     this.game.load.start();
   }
 
@@ -213,7 +346,12 @@ export default class extends Phaser.State {
     this.listView = new ListView(
       this.game,
       this.world,
-      new Phaser.Rectangle(20, 60, this.world.width - 40, this.world.height - 60),
+      new Phaser.Rectangle(
+        20,
+        60,
+        this.world.width - 40,
+        this.world.height - 60,
+      ),
       { padding: 20, searchForClicks: true },
     );
     rows.forEach((row, j) => {
@@ -223,12 +361,17 @@ export default class extends Phaser.State {
         grp.position.set(i * (maxWidth + padding) + 165, 160);
         grp.item = item;
         items.push(grp);
-        TweenMax.from(grp, 0.5, { delay: i * 0.1 + j * 0.5, angle: 60, y: '+=200', ease: Strong.easeOut, alpha: 0 });
+        TweenMax.from(grp, 0.5, {
+          delay: i * 0.1 + j * 0.5,
+          angle: 60,
+          y: '+=200',
+          ease: Strong.easeOut,
+          alpha: 0,
+        });
 
         // show placeholder loader
         const g = this.game.add.graphics(0, 0, grp);
-        g.beginFill(0x333333)
-         .drawRect(0, 0, maxWidth, maxHeight);
+        g.beginFill(0x333333).drawRect(0, 0, maxWidth, maxHeight);
         g.pivot.set(maxWidth / 2, maxHeight / 2);
         g.alpha = 0.1;
 
@@ -236,7 +379,11 @@ export default class extends Phaser.State {
         spinner.anchor.set(0.5);
         spinner.width = 50;
         spinner.scale.y = spinner.scale.x;
-        TweenMax.to(spinner, 2, { angle: 360, repeat: -1, ease: Linear.easeNone });
+        TweenMax.to(spinner, 2, {
+          angle: 360,
+          repeat: -1,
+          ease: Linear.easeNone,
+        });
       });
       this.listView.add(rowGrp);
     });
@@ -312,7 +459,14 @@ export default class extends Phaser.State {
       onComplete: this.handleThoughtAnimationComplete,
       onCompleteScope: this,
     });
-    const title = this.add.bitmapText(0, -200, 'arnold', thought.title.toUpperCase(), 50, grp);
+    const title = this.add.bitmapText(
+      0,
+      -200,
+      'arnold',
+      thought.title.toUpperCase(),
+      50,
+      grp,
+    );
     title.maxWidth = 350;
     title.align = 'center';
     title.anchor.x = 0.5;
@@ -326,7 +480,14 @@ export default class extends Phaser.State {
       });
       this.load.start();
     } else {
-      const body = this.add.bitmapText(0, title.y + title.height + 50, 'arnold', thought.body.toUpperCase(), 40, grp);
+      const body = this.add.bitmapText(
+        0,
+        title.y + title.height + 50,
+        'arnold',
+        thought.body.toUpperCase(),
+        40,
+        grp,
+      );
       body.maxWidth = 350;
       body.align = 'center';
       body.anchor.x = 0.5;
@@ -341,7 +502,13 @@ export default class extends Phaser.State {
       grp.removeChildAt(1);
     }
     TweenMax.to(grp.scale, 0.5, { x: 0.1, y: 0.1, ease: Strong.easeOut });
-    TweenMax.to(grp, 0.5, { x: orgX, y: orgY, ease: Strong.easeOut, onComplete: this.handleThoughtAnimationComplete, onCompleteScope: this });
+    TweenMax.to(grp, 0.5, {
+      x: orgX,
+      y: orgY,
+      ease: Strong.easeOut,
+      onComplete: this.handleThoughtAnimationComplete,
+      onCompleteScope: this,
+    });
   }
 
   handleThoughtAnimationComplete() {
@@ -361,7 +528,11 @@ export default class extends Phaser.State {
     //  Being mp3 files these take time to decode, so we can't play them instantly
     //  Using setDecodedCallback we can be notified when they're ALL ready for use.
     //  The audio files could decode in ANY order, we can never be sure which it'll be.
-    this.game.sound.setDecodedCallback(Object.values(this.slotSoundsHash), () => {}, this);
+    this.game.sound.setDecodedCallback(
+      Object.values(this.slotSoundsHash),
+      () => {},
+      this,
+    );
   }
 
   update() {
