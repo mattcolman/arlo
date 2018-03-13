@@ -1,11 +1,8 @@
 node_modules/
 dist/
 public/
-.vscode/
 *.fnt
 *.atlas/
 *.log
 *.zip
-*.dbproj
-*/library/*
 working/
